@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">PracticeApps</string>
+    <string name="ascending">Ascending</string>
+    <string name="descending">Descending</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="api_entries">API List</string>
+    <string name="avatar">avatar</string>
+    <string name="first_name">Firstname</string>
+    <string name="last_name">Lastname</string>
+    <string name="email">Email</string>
+    <string name="no_internet">No internet</string>
+    <string name="nav_open">Open</string>
+    <string name="nav_close">Close</string>
+    <string name="user_list">User List</string>
+</resources>
