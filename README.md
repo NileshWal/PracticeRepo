@@ -14,3 +14,4 @@ The Android architectural components and libraries used:
 7. Lifecycle-aware.
 8. Room Database.
 9. HILT implementation in progress.
+10. Unit Test (Mockito) in pipeline.
