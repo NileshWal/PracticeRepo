@@ -10,12 +10,12 @@ import com.example.practiceapps.database.model.PublicApisListDetails
 interface PublicApisDataDao {
 
     @Insert
-    fun insertIntoTable(publicApisListDetails: PublicApisListDetails)
+    suspend fun insertIntoTable(publicApisListDetails: PublicApisListDetails)
 
     @Query("SELECT count(*) from ${AppDatabase.PUBLIC_API_TABLE}")
-    fun getApiEntriesCount(): Int
+    suspend fun getApiEntriesCount(): Int
 
     @Query("DELETE from ${AppDatabase.PUBLIC_API_TABLE}")
-    fun clearApiEntriesTable()
+    suspend fun clearApiEntriesTable()
 
 }

@@ -10,18 +10,18 @@ import com.example.practiceapps.database.model.UserListDetails
 interface UserListDataDao {
 
     @Insert
-    fun insertIntoTable(userListDetails: UserListDetails)
+    suspend fun insertIntoTable(userListDetails: UserListDetails)
 
     @Query("select * from ${AppDatabase.USER_DETAIL_TABLE} ORDER BY first_name ASC")
-    fun arrangeInAscendingOrder(): List<UserListDetails>
+    suspend fun arrangeInAscendingOrder(): List<UserListDetails>
 
     @Query("select * from ${AppDatabase.USER_DETAIL_TABLE} ORDER BY first_name DESC")
-    fun arrangeInDescendingOrder(): List<UserListDetails>
+    suspend fun arrangeInDescendingOrder(): List<UserListDetails>
 
     @Query("SELECT count(*) from ${AppDatabase.USER_DETAIL_TABLE}")
-    fun getUserListCount(): Int
+    suspend fun getUserListCount(): Int
 
     @Query("DELETE from ${AppDatabase.USER_DETAIL_TABLE}")
-    fun clearUserListTable()
+    suspend fun clearUserListTable()
 
 }

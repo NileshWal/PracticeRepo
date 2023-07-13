@@ -101,10 +101,8 @@ class UserListViewModel(appDatabase: AppDatabase) : ViewModel() {
      * */
     fun makeUserListAscending() {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                val ascendingList = mAppDatabase.userListDataDao().arrangeInAscendingOrder()
-                _userListLiveData.postValue(ascendingList.toMutableList())
-            }
+            val ascendingList = mAppDatabase.userListDataDao().arrangeInAscendingOrder()
+            _userListLiveData.postValue(ascendingList.toMutableList())
         }
     }
 
@@ -113,10 +111,8 @@ class UserListViewModel(appDatabase: AppDatabase) : ViewModel() {
      * */
     fun makeUserListDescending() {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                val descendingList = mAppDatabase.userListDataDao().arrangeInDescendingOrder()
-                _userListLiveData.postValue(descendingList.toMutableList())
-            }
+            val descendingList = mAppDatabase.userListDataDao().arrangeInDescendingOrder()
+            _userListLiveData.postValue(descendingList.toMutableList())
         }
     }
 
