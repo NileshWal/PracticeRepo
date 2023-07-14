@@ -114,16 +114,30 @@ class UserListFragment : Fragment() {
                 ) {
                     //Make the existing list in descending order when scrolled full down
                     LogUtils.e(screenName, "scroll down")
-                    viewModel.makeUserListDescending()
+                    sortUserList(false)
                 } else if (!recyclerView.canScrollVertically(-1)
                     && newState == RecyclerView.SCROLL_STATE_IDLE
                 ) {
                     //Make the existing list in ascending order when scrolled full up
                     LogUtils.e(screenName, "scroll up")
-                    viewModel.makeUserListAscending()
+                    sortUserList(true)
                 }
             }
         })
+    }
+
+    /**
+     * This function will make the DB call to sort the user list in ascending or descending order.
+     *
+     * @param isAscending Whether to sort the user list in ascending or descending order.
+     * */
+    private fun sortUserList(isAscending: Boolean) {
+        showLoader(true)
+        if (isAscending) {
+            viewModel.makeUserListAscending()
+        } else {
+            viewModel.makeUserListDescending()
+        }
     }
 
     companion object {

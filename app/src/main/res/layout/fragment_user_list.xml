@@ -6,13 +6,13 @@
     android:background="@color/white"
     tools:context=".ui.fragment.UserListFragment">
 
-    <include
-        android:id="@+id/loader"
-        layout="@layout/loading_screen" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/userListRV"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <include
+        android:id="@+id/loader"
+        layout="@layout/loading_screen" />
 
 </FrameLayout>

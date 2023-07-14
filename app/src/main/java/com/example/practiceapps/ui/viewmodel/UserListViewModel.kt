@@ -103,6 +103,7 @@ class UserListViewModel(appDatabase: AppDatabase) : ViewModel() {
         viewModelScope.launch {
             val ascendingList = mAppDatabase.userListDataDao().arrangeInAscendingOrder()
             _userListLiveData.postValue(ascendingList.toMutableList())
+            _loaderLiveData.postValue(LoaderStatus(false, ResponseStatus.NO_ISSUE))
         }
     }
 
@@ -113,6 +114,7 @@ class UserListViewModel(appDatabase: AppDatabase) : ViewModel() {
         viewModelScope.launch {
             val descendingList = mAppDatabase.userListDataDao().arrangeInDescendingOrder()
             _userListLiveData.postValue(descendingList.toMutableList())
+            _loaderLiveData.postValue(LoaderStatus(false, ResponseStatus.NO_ISSUE))
         }
     }
 
