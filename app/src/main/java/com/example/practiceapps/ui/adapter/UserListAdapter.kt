@@ -36,9 +36,14 @@ class UserListAdapter(context: Context, userList: MutableList<UserListDetails>) 
         holder.binding.emailTV.text = userDetail.email
     }
 
-    fun refreshUserList(newData: List<UserListDetails>) {
+    /**
+     * This function will redraw the adapter view with latest data.
+     *
+     * @param newUserDetailsList List of UserListDetails object.
+     * */
+    fun refreshUserList(newUserDetailsList: List<UserListDetails>) {
         mUserList.clear()
-        mUserList.addAll(newData)
+        mUserList.addAll(newUserDetailsList)
         notifyDataSetChanged()
     }
 

@@ -33,6 +33,8 @@ import com.example.practiceapps.R
 import com.example.practiceapps.database.AppDatabase
 import com.example.practiceapps.database.model.PublicApisListDetails
 import com.example.practiceapps.databinding.FragmentPublicApiBinding
+import com.example.practiceapps.network.NetworkInstance
+import com.example.practiceapps.repository.PublicApiRepository
 import com.example.practiceapps.ui.viewmodel.PublicApiViewModel
 import com.example.practiceapps.utils.CommonUtils
 import com.example.practiceapps.utils.ResponseStatus
@@ -43,7 +45,10 @@ class PublicApiFragment : Fragment() {
     private lateinit var binding: FragmentPublicApiBinding
     private val viewModel: PublicApiViewModel by viewModels {
         PublicApiViewModel.PublicApiViewModelFactory(
-            AppDatabase.getInstance(requireActivity())
+            PublicApiRepository(
+                NetworkInstance.getInstance(NetworkInstance.API_ENTRIES_BASE_URL),
+                AppDatabase.getInstance(requireActivity())
+            )
         )
     }
 

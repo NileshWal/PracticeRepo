@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.practiceapps.R
 import com.example.practiceapps.database.AppDatabase
 import com.example.practiceapps.databinding.FragmentUserListBinding
+import com.example.practiceapps.network.NetworkInstance
+import com.example.practiceapps.repository.UserListRepository
 import com.example.practiceapps.ui.adapter.UserListAdapter
 import com.example.practiceapps.ui.viewmodel.UserListViewModel
 import com.example.practiceapps.utils.CommonUtils
@@ -27,7 +29,10 @@ class UserListFragment : Fragment() {
     private lateinit var binding: FragmentUserListBinding
     private val viewModel: UserListViewModel by viewModels {
         UserListViewModel.UserListViewModelFactory(
-            AppDatabase.getInstance(requireActivity())
+            UserListRepository(
+                NetworkInstance.getInstance(NetworkInstance.USER_LIST_BASE_URL),
+                AppDatabase.getInstance(requireActivity())
+            )
         )
     }
     private lateinit var adapter: UserListAdapter
