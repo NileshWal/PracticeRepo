@@ -25,7 +25,7 @@ class PublicApiRepository(
      * This function is used to make the API call for Api Entry list.
      * */
     suspend fun makeRemotePublicApiCall() {
-        val apiEntriesRequest = networkInstance.getApiEntries()
+        val apiEntriesRequest = networkInstance.fetchApiEntries()
         val apiEntriesResult = apiEntriesRequest.execute()
 
         LogUtils.e(screenName, "response code ${apiEntriesResult.code()}")

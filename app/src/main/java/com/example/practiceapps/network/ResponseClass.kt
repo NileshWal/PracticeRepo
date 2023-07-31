@@ -5,28 +5,6 @@ import com.google.gson.annotations.SerializedName
 
 class ResponseClass {
 
-    data class UserResponse(
-        @SerializedName("page") var page: Int? = null,
-        @SerializedName("per_page") var perPage: Int? = null,
-        @SerializedName("total") var total: Int? = null,
-        @SerializedName("total_pages") var totalPages: Int? = null,
-        @SerializedName("data") var data: ArrayList<Data> = arrayListOf(),
-        @SerializedName("support") var support: Support? = Support()
-    )
-
-    data class Data(
-        @SerializedName("id") var id: Int? = null,
-        @SerializedName("email") var email: String? = null,
-        @SerializedName("first_name") var firstName: String? = null,
-        @SerializedName("last_name") var lastName: String? = null,
-        @SerializedName("avatar") var avatar: String? = null
-    )
-
-    data class Support(
-        @SerializedName("url") var url: String? = null,
-        @SerializedName("text") var text: String? = null
-    )
-
     data class ApiEntriesResponse(
         @SerializedName("count") var count: Int? = null,
         @SerializedName("entries") var entries: ArrayList<Entries> = arrayListOf()
@@ -40,6 +18,22 @@ class ResponseClass {
         @SerializedName("Cors") var cors: String? = null,
         @SerializedName("Link") var link: String? = null,
         @SerializedName("Category") var category: String? = null
+    )
+
+    data class PhotoListResponse(
+        @SerializedName("success") var success: Boolean? = null,
+        @SerializedName("message") var message: String? = null,
+        @SerializedName("offset") var offset: Int? = null,
+        @SerializedName("limit") var limit: Int? = null,
+        @SerializedName("photos") var photos: ArrayList<Photos> = arrayListOf()
+    )
+
+    data class Photos(
+        @SerializedName("description") var description: String? = null,
+        @SerializedName("url") var url: String? = null,
+        @SerializedName("title") var title: String? = null,
+        @SerializedName("id") var id: Int? = null,
+        @SerializedName("user") var user: Int? = null
     )
 
 }

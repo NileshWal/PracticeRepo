@@ -1,7 +1,6 @@
 package com.example.practiceapps.ui.fragment
 
 import android.content.Context
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,37 +11,42 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.practiceapps.R
 import com.example.practiceapps.database.AppDatabase
-import com.example.practiceapps.databinding.FragmentUserListBinding
+import com.example.practiceapps.databinding.FragmentPhotoListBinding
 import com.example.practiceapps.network.NetworkInstance
-import com.example.practiceapps.repository.UserListRepository
-import com.example.practiceapps.ui.adapter.UserListAdapter
-import com.example.practiceapps.ui.viewmodel.UserListViewModel
+import com.example.practiceapps.repository.PhotoDetailsListRepository
+import com.example.practiceapps.ui.adapter.PhotoDetailsAdapter
+import com.example.practiceapps.ui.viewmodel.PhotoDetailsListViewModel
 import com.example.practiceapps.utils.CommonUtils
 import com.example.practiceapps.utils.LogUtils
 import com.example.practiceapps.utils.ResponseStatus
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.Collections
+import java.util.LinkedList
+import java.util.Stack
 
 
-class UserListFragment : Fragment() {
+class PhotoDetailsListFragment : Fragment() {
 
-    private val screenName = UserListFragment::class.java.simpleName
-    private lateinit var binding: FragmentUserListBinding
-    private val viewModel: UserListViewModel by viewModels {
-        UserListViewModel.UserListViewModelFactory(
-            UserListRepository(
-                NetworkInstance.getInstance(NetworkInstance.USER_LIST_BASE_URL),
+    private val screenName = PhotoDetailsListFragment::class.java.simpleName
+    private lateinit var binding: FragmentPhotoListBinding
+    private val viewModel: PhotoDetailsListViewModel by viewModels {
+        PhotoDetailsListViewModel.UserListViewModelFactory(
+            PhotoDetailsListRepository(
+                NetworkInstance.getInstance(NetworkInstance.IMAGE_LIST_BASE_URL),
                 AppDatabase.getInstance(requireActivity())
             )
         )
     }
-    private lateinit var adapter: UserListAdapter
+    private lateinit var adapter: PhotoDetailsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentUserListBinding.inflate(layoutInflater)
+        binding = FragmentPhotoListBinding.inflate(layoutInflater)
         setupAdapter()
         setupLivedata()
         callApi(requireActivity())
@@ -56,10 +60,23 @@ class UserListFragment : Fragment() {
     private fun setupAdapter() {
         val initialList = viewModel.userListLiveData.value?.let { Collections.unmodifiableList(it) }
             ?: mutableListOf()
-        adapter = UserListAdapter(requireActivity(), initialList)
+        adapter = PhotoDetailsAdapter(requireActivity(), initialList)
         binding.userListRV.setHasFixedSize(true)
         binding.userListRV.layoutManager = LinearLayoutManager(requireActivity())
         binding.userListRV.adapter = adapter
+
+
+        val animals = LinkedList<String>()
+        animals.add("Dog")
+        animals.add("Cat")
+        animals.add("Cow")
+        LogUtils.e(screenName, "LinkedList: $animals")
+
+        val stackEx = Stack<Int>()
+        stackEx.push(1)
+        stackEx.push(4)
+        stackEx.push(46)
+
     }
 
     /**
@@ -70,12 +87,7 @@ class UserListFragment : Fragment() {
     private fun callApi(context: Context) {
         showLoader(true)
         if (CommonUtils.isConnected(context)) {
-            viewModel.callUsersApi(
-                if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
-                    1
-                else
-                    2
-            )
+            viewModel.callUsersApi(0, 20)
         } else {
             showLoader(false)
             CommonUtils.showToastMessage(context, getString(R.string.no_internet))
@@ -143,6 +155,9 @@ class UserListFragment : Fragment() {
         } else {
             viewModel.makeUserListDescending()
         }
+        CoroutineScope(Dispatchers.IO).launch {
+            coroutineContext
+        }
     }
 
     companion object {
@@ -151,6 +166,6 @@ class UserListFragment : Fragment() {
          * This function will set provide an instance of the fragment.
          * */
         fun newInstance() =
-            UserListFragment()
+            PhotoDetailsListFragment()
     }
 }

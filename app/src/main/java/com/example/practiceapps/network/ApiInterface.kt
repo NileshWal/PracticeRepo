@@ -7,12 +7,13 @@ import retrofit2.http.Query
 
 interface ApiInterface {
 
-    @GET("/api/users")
-    fun getUserList(
-        @Query("page") pageNumber: Int
-    ): Call<ResponseClass.UserResponse>
+    @GET("v1/sample-data/photos")
+    fun fetchImageList(
+        @Query("offset") offset: Int = 0,
+        @Query("limit") limit: Int = 10
+    ): Call<ResponseClass.PhotoListResponse>
 
     @GET("/entries")
-    fun getApiEntries(): Call<ResponseClass.ApiEntriesResponse>
+    fun fetchApiEntries(): Call<ResponseClass.ApiEntriesResponse>
 
 }

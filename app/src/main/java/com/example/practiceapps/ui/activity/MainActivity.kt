@@ -9,7 +9,7 @@ import androidx.core.view.GravityCompat
 import com.example.practiceapps.R
 import com.example.practiceapps.databinding.ActivityMainBinding
 import com.example.practiceapps.ui.fragment.PublicApiFragment
-import com.example.practiceapps.ui.fragment.UserListFragment
+import com.example.practiceapps.ui.fragment.PhotoDetailsListFragment
 import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -54,8 +54,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         supportFragmentManager.beginTransaction().addToBackStack(null)
             .add(
                 binding.fragmentContainer.id,
-                UserListFragment.newInstance(),
-                UserListFragment::class.java.simpleName
+                PhotoDetailsListFragment.newInstance(),
+                PhotoDetailsListFragment::class.java.simpleName
             )
             .commit()
     }
@@ -77,8 +77,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 supportFragmentManager.beginTransaction().addToBackStack(null)
                     .add(
                         binding.fragmentContainer.id,
-                        UserListFragment.newInstance(),
-                        UserListFragment::class.java.simpleName
+                        PhotoDetailsListFragment.newInstance(),
+                        PhotoDetailsListFragment::class.java.simpleName
                     )
                     .commit()
             }

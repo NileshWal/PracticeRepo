@@ -8,8 +8,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object NetworkInstance {
 
-    const val USER_LIST_BASE_URL = "https://reqres.in/"
     const val API_ENTRIES_BASE_URL = "https://api.publicapis.org/"
+    const val IMAGE_LIST_BASE_URL = "https://api.slingacademy.com/"
 
     fun getInstance(url: String): ApiInterface {
         val retrofitInstance = Retrofit.Builder().baseUrl(url)

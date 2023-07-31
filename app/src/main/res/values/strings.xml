@@ -6,9 +6,9 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="api_entries">API Entries</string>
     <string name="avatar">avatar</string>
-    <string name="first_name">Firstname</string>
-    <string name="last_name">Lastname</string>
-    <string name="email">Email</string>
+    <string name="user_id">Id</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
     <string name="no_internet">No internet</string>
     <string name="nav_open">Open</string>
     <string name="nav_close">Close</string>
