@@ -5,9 +5,9 @@ make app development easy and modular.
 
 The Android architectural components and libraries used:
 1. Kotlin.
-2. Partial MVVM. Repository module is yet to be implemented.
+2. MVVM with Repository module.
 3. Coroutines.
-4. Jetpack Compose.
+4. Jetpack Compose (Sample implementation done. In progress for implementing glide compose).
 5. Navigation Component (Had implemented earlier but reverted to traditional Navigation Drawer to
    check feasibility with Jetpack Compose).
 6. Retrofit2 (Networking). May go for KTor after doing RnD on it.

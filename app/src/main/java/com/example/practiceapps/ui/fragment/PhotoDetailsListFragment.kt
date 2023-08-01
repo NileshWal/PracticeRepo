@@ -87,7 +87,7 @@ class PhotoDetailsListFragment : Fragment() {
     private fun callApi(context: Context) {
         showLoader(true)
         if (CommonUtils.isConnected(context)) {
-            viewModel.callUsersApi(0, 20)
+            viewModel.callUsersApi(0, 40)
         } else {
             showLoader(false)
             CommonUtils.showToastMessage(context, getString(R.string.no_internet))
@@ -126,7 +126,7 @@ class PhotoDetailsListFragment : Fragment() {
         binding.userListRV.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (!recyclerView.canScrollVertically(1)
+                /*if (!recyclerView.canScrollVertically(1)
                     && newState == RecyclerView.SCROLL_STATE_IDLE
                 ) {
                     //Make the existing list in descending order when scrolled full down
@@ -138,7 +138,7 @@ class PhotoDetailsListFragment : Fragment() {
                     //Make the existing list in ascending order when scrolled full up
                     LogUtils.e(screenName, "scroll up")
                     sortUserList(true)
-                }
+                }*/
             }
         })
     }

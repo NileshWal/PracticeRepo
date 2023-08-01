@@ -33,10 +33,10 @@ class PhotoDetailsAdapter(context: Context, photoDetailList: MutableList<PhotoDe
     override fun onBindViewHolder(holder: PhotoDetailsViewHolder, position: Int) {
         val photoDetails = mPhotoDetailList[position]
 
-        holder.binding.userIdTV.text = photoDetails.user.toString()
+        holder.binding.userIdTV.text = photoDetails.id.toString()
         holder.binding.titleTV.text = photoDetails.title
         holder.binding.descriptionTV.text = photoDetails.description
-        Glide.with(mContext).load(photoDetails.url).centerCrop().placeholder(R.drawable.avatar)
+        Glide.with(mContext).load(photoDetails.url).placeholder(R.drawable.avatar)
             .timeout(6000)
             .error(R.drawable.avatar)
             .into(holder.binding.avatarIV)
