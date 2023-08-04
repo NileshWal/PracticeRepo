@@ -7,9 +7,10 @@ import com.example.practiceapps.model.LoaderStatus
 import com.example.practiceapps.network.ApiInterface
 import com.example.practiceapps.utils.LogUtils
 import com.example.practiceapps.utils.ResponseStatus
+import javax.inject.Inject
 
 
-class PhotoDetailsListRepository(
+class PhotoDetailsListRepository @Inject constructor(
     private val networkInstance: ApiInterface,
     private val appDatabase: AppDatabase
 ) {

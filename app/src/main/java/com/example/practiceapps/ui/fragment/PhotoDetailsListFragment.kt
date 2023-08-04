@@ -10,15 +10,13 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.practiceapps.R
-import com.example.practiceapps.database.AppDatabase
 import com.example.practiceapps.databinding.FragmentPhotoListBinding
-import com.example.practiceapps.network.NetworkInstance
-import com.example.practiceapps.repository.PhotoDetailsListRepository
 import com.example.practiceapps.ui.adapter.PhotoDetailsAdapter
-import com.example.practiceapps.ui.viewmodel.PhotoDetailsListViewModel
+import com.example.practiceapps.viewmodel.PhotoDetailsListViewModel
 import com.example.practiceapps.utils.CommonUtils
 import com.example.practiceapps.utils.LogUtils
 import com.example.practiceapps.utils.ResponseStatus
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,18 +25,12 @@ import java.util.LinkedList
 import java.util.Stack
 
 
+@AndroidEntryPoint
 class PhotoDetailsListFragment : Fragment() {
 
     private val screenName = PhotoDetailsListFragment::class.java.simpleName
     private lateinit var binding: FragmentPhotoListBinding
-    private val viewModel: PhotoDetailsListViewModel by viewModels {
-        PhotoDetailsListViewModel.UserListViewModelFactory(
-            PhotoDetailsListRepository(
-                NetworkInstance.getInstance(NetworkInstance.IMAGE_LIST_BASE_URL),
-                AppDatabase.getInstance(requireActivity())
-            )
-        )
-    }
+    private val viewModel: PhotoDetailsListViewModel by viewModels()
     private lateinit var adapter: PhotoDetailsAdapter
 
     override fun onCreateView(

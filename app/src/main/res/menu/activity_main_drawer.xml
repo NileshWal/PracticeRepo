@@ -7,7 +7,7 @@
         <item
             android:id="@+id/nav_apiEntries"
             android:icon="@drawable/avatar"
-            android:title="@string/api_entries" />
+            android:title="@string/user_records" />
     </group>
 
 </menu>

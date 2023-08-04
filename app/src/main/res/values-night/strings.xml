@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="api_entries">API List</string>
+    <string name="user_records">User Records</string>
     <string name="user_id">Id</string>
     <string name="title">Title</string>
     <string name="description">Description</string>

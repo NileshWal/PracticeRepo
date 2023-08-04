@@ -8,10 +8,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.example.practiceapps.R
 import com.example.practiceapps.databinding.ActivityMainBinding
-import com.example.practiceapps.ui.fragment.PublicApiFragment
 import com.example.practiceapps.ui.fragment.PhotoDetailsListFragment
+import com.example.practiceapps.ui.fragment.UserRecordsFragment
 import com.google.android.material.navigation.NavigationView
+import dagger.hilt.android.AndroidEntryPoint
 
+
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var binding: ActivityMainBinding
@@ -87,8 +90,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 supportFragmentManager.beginTransaction().addToBackStack(null)
                     .add(
                         binding.fragmentContainer.id,
-                        PublicApiFragment.newInstance(),
-                        PublicApiFragment::class.java.simpleName
+                        UserRecordsFragment.newInstance(),
+                        UserRecordsFragment::class.java.simpleName
                     )
                     .commit()
             }

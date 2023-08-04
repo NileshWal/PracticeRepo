@@ -4,7 +4,7 @@
     <string name="descending">Descending</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="api_entries">API Entries</string>
+    <string name="user_records">User Records</string>
     <string name="avatar">avatar</string>
     <string name="user_id">Id</string>
     <string name="title">Title</string>

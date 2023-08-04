@@ -5,19 +5,32 @@ import com.google.gson.annotations.SerializedName
 
 class ResponseClass {
 
-    data class ApiEntriesResponse(
-        @SerializedName("count") var count: Int? = null,
-        @SerializedName("entries") var entries: ArrayList<Entries> = arrayListOf()
+    data class UserRecordsResponse(
+        @SerializedName("success") var success: Boolean? = null,
+        @SerializedName("time") var time: String? = null,
+        @SerializedName("message") var message: String? = null,
+        @SerializedName("total_users") var totalUsers: Int? = null,
+        @SerializedName("offset") var offset: Int? = null,
+        @SerializedName("limit") var limit: Int? = null,
+        @SerializedName("users") var users: ArrayList<Users> = arrayListOf()
     )
 
-    data class Entries(
-        @SerializedName("API") var api: String? = null,
-        @SerializedName("Description") var description: String? = null,
-        @SerializedName("Auth") var auth: String? = null,
-        @SerializedName("HTTPS") var https: Boolean? = null,
-        @SerializedName("Cors") var cors: String? = null,
-        @SerializedName("Link") var link: String? = null,
-        @SerializedName("Category") var category: String? = null
+    data class Users(
+        @SerializedName("id") var id: Int? = null,
+        @SerializedName("first_name") var firstName: String? = null,
+        @SerializedName("last_name") var lastName: String? = null,
+        @SerializedName("gender") var gender: String? = null,
+        @SerializedName("date_of_birth") var dateOfBirth: String? = null,
+        @SerializedName("email") var email: String? = null,
+        @SerializedName("phone") var phone: String? = null,
+        @SerializedName("street") var street: String? = null,
+        @SerializedName("city") var city: String? = null,
+        @SerializedName("state") var state: String? = null,
+        @SerializedName("country") var country: String? = null,
+        @SerializedName("zipcode") var zipcode: String? = null,
+        @SerializedName("job") var job: String? = null,
+        @SerializedName("longitude") var longitude: Double? = null,
+        @SerializedName("latitude") var latitude: Double? = null
     )
 
     data class PhotoListResponse(

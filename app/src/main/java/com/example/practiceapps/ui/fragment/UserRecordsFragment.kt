@@ -30,40 +30,32 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.practiceapps.R
-import com.example.practiceapps.database.AppDatabase
-import com.example.practiceapps.database.model.PublicApisListDetails
-import com.example.practiceapps.databinding.FragmentPublicApiBinding
-import com.example.practiceapps.network.NetworkInstance
-import com.example.practiceapps.repository.PublicApiRepository
-import com.example.practiceapps.ui.viewmodel.PublicApiViewModel
+import com.example.practiceapps.database.model.UserRecordsListDetails
+import com.example.practiceapps.databinding.FragmentUserRecordsBinding
 import com.example.practiceapps.utils.CommonUtils
 import com.example.practiceapps.utils.ResponseStatus
+import com.example.practiceapps.viewmodel.UserRecordsViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 
-class PublicApiFragment : Fragment() {
+@AndroidEntryPoint
+class UserRecordsFragment : Fragment() {
 
-    private lateinit var binding: FragmentPublicApiBinding
-    private val viewModel: PublicApiViewModel by viewModels {
-        PublicApiViewModel.PublicApiViewModelFactory(
-            PublicApiRepository(
-                NetworkInstance.getInstance(NetworkInstance.API_ENTRIES_BASE_URL),
-                AppDatabase.getInstance(requireActivity())
-            )
-        )
-    }
+    private lateinit var binding: FragmentUserRecordsBinding
+    private val viewModel: UserRecordsViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentPublicApiBinding.inflate(layoutInflater, container, false)
+        binding = FragmentUserRecordsBinding.inflate(layoutInflater, container, false)
         setUpLiveData()
         return binding.root.apply {
             binding.composeView.setContent {
                 MaterialTheme(
                     colors = if (isSystemInDarkTheme()) darkColors() else lightColors()
                 ) {
-                    PublicApiComposeView(viewModel.apiEntriesLiveData)
+                    PublicApiComposeView(viewModel.userRecordsLiveData)
                 }
             }
             callApi(requireActivity())
@@ -90,7 +82,7 @@ class PublicApiFragment : Fragment() {
     private fun callApi(context: Context) {
         showLoader(true)
         if (CommonUtils.isConnected(context)) {
-            viewModel.callApiEntriesApi()
+            viewModel.callUserRecordsApi(0, 20)
         } else {
             showLoader(false)
             CommonUtils.showToastMessage(context, getString(R.string.no_internet))
@@ -112,7 +104,7 @@ class PublicApiFragment : Fragment() {
      * @param apiEntriesLiveData The SnapshotStateList of PublicApisListDetails
      * */
     @Composable
-    private fun PublicApiComposeView(apiEntriesLiveData: SnapshotStateList<PublicApisListDetails>) {
+    private fun PublicApiComposeView(apiEntriesLiveData: SnapshotStateList<UserRecordsListDetails>) {
         Scaffold(
             content = {
                 LazyColumn {
@@ -127,10 +119,10 @@ class PublicApiFragment : Fragment() {
     /**
      * This function will create the item view for the LazyColumn (like recyclerview).
      *
-     * @param publicApisListDetails The PublicApisListDetails object
+     * @param userRecordsListDetails The PublicApisListDetails object
      * */
     @Composable
-    private fun PublicApisListItem(publicApisListDetails: PublicApisListDetails) {
+    private fun PublicApisListItem(userRecordsListDetails: UserRecordsListDetails) {
         Card(
             modifier = Modifier
                 .padding(8.dp, 8.dp)
@@ -148,24 +140,50 @@ class PublicApiFragment : Fragment() {
                         .align(Alignment.CenterVertically)
                 ) {
                     Row {
-                        CustomTextView("API: ", FontWeight.Bold)
-                        CustomTextView(publicApisListDetails.api.toString())
+                        CustomTextView("Name: ", FontWeight.Bold)
+                        CustomTextView(
+                            userRecordsListDetails.firstName.toString()
+                                    + " "
+                                    + userRecordsListDetails.lastName.toString()
+                        )
                     }
                     Row {
-                        CustomTextView("category: ", FontWeight.Bold)
-                        CustomTextView(publicApisListDetails.category.toString())
+                        CustomTextView("Gender: ", FontWeight.Bold)
+                        CustomTextView(userRecordsListDetails.gender.toString())
                     }
                     Row {
-                        CustomTextView("description: ", FontWeight.Bold)
-                        CustomTextView(publicApisListDetails.description.toString())
+                        CustomTextView("DoB: ", FontWeight.Bold)
+                        CustomTextView(userRecordsListDetails.dateOfBirth.toString())
                     }
                     Row {
-                        CustomTextView("https: ", FontWeight.Bold)
-                        CustomTextView(publicApisListDetails.https.toString())
+                        CustomTextView("Email & Phone: ", FontWeight.Bold)
+                        CustomTextView(
+                            userRecordsListDetails.email.toString()
+                                    + " "
+                                    + userRecordsListDetails.phone.toString()
+                        )
                     }
                     Row {
-                        CustomTextView("URL: ", FontWeight.Bold)
-                        CustomTextView(publicApisListDetails.link.toString())
+                        CustomTextView("Address: ", FontWeight.Bold)
+                        CustomTextView(
+                            userRecordsListDetails.street.toString()
+                                    + " "
+                                    + userRecordsListDetails.city.toString()
+                                    + " "
+                                    + userRecordsListDetails.state.toString()
+                                    + " "
+                                    + userRecordsListDetails.country.toString()
+                                    + " "
+                                    + userRecordsListDetails.zipcode.toString()
+                                    + " "
+                                    + userRecordsListDetails.latitude.toString()
+                                    + " "
+                                    + userRecordsListDetails.longitude.toString()
+                        )
+                    }
+                    Row {
+                        CustomTextView("Job: ", FontWeight.Bold)
+                        CustomTextView(userRecordsListDetails.job.toString())
                     }
                 }
             }
@@ -193,7 +211,7 @@ class PublicApiFragment : Fragment() {
          * This function will set provide an instance of the fragment.
          * */
         fun newInstance() =
-            PublicApiFragment()
+            UserRecordsFragment()
     }
 
 }

@@ -1,18 +1,21 @@
-package com.example.practiceapps.ui.viewmodel
+package com.example.practiceapps.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.practiceapps.database.model.PhotoDetails
 import com.example.practiceapps.model.LoaderStatus
 import com.example.practiceapps.repository.PhotoDetailsListRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 
-class PhotoDetailsListViewModel(photoDetailsListRepository: PhotoDetailsListRepository) : ViewModel() {
+@HiltViewModel
+class PhotoDetailsListViewModel @Inject constructor(photoDetailsListRepository: PhotoDetailsListRepository) :
+    ViewModel() {
 
     private val mUserListRepository = photoDetailsListRepository
     val userListLiveData: MutableLiveData<MutableList<PhotoDetails>> =
@@ -49,18 +52,6 @@ class PhotoDetailsListViewModel(photoDetailsListRepository: PhotoDetailsListRepo
     fun makeUserListDescending() {
         viewModelScope.launch {
             mUserListRepository.fetchDescendingUserListFromDB()
-        }
-    }
-
-    //ViewModelFactory
-    class UserListViewModelFactory(private val photoDetailsListRepository: PhotoDetailsListRepository) :
-        ViewModelProvider.NewInstanceFactory() {
-
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(PhotoDetailsListViewModel::class.java)) {
-                return PhotoDetailsListViewModel(photoDetailsListRepository) as T
-            }
-            throw IllegalArgumentException("Unknown class name")
         }
     }
 
