@@ -3,7 +3,6 @@ package com.example.practiceapps.viewmodel
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.practiceapps.database.model.UserRecordsListDetails
 import com.example.practiceapps.model.LoaderStatus
@@ -32,6 +31,24 @@ class UserRecordsViewModel @Inject constructor(userRecordsRepository: UserRecord
             withContext(Dispatchers.IO) {
                 mUserRecordsRepository.makeRemoteUserRecordsCall(offset, limit)
             }
+        }
+    }
+
+    /**
+     * This function will fetch data in ascending order the UserRecordsRepository.
+     * */
+    fun makeUserListAscending() {
+        viewModelScope.launch {
+            mUserRecordsRepository.fetchUserRecordsAscendingOrder()
+        }
+    }
+
+    /**
+     * This function will fetch data in descending order from the UserRecordsRepository.
+     * */
+    fun makeUserListDescending() {
+        viewModelScope.launch {
+            mUserRecordsRepository.fetchUserRecordsDescendingOrder()
         }
     }
 

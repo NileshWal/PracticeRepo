@@ -15,6 +15,12 @@ interface UserRecordsDataDao {
     @Query("SELECT count(*) from ${AppDatabase.USER_RECORDS_TABLE}")
     suspend fun fetchUserRecordsCount(): Int
 
+    @Query("SELECT * from ${AppDatabase.USER_RECORDS_TABLE} ORDER BY date_of_birth")
+    suspend fun fetchUserRecordsAscendingOrder(): List<UserRecordsListDetails>
+
+    @Query("SELECT * from ${AppDatabase.USER_RECORDS_TABLE} ORDER BY date_of_birth DESC")
+    suspend fun fetchUserRecordsDescendingOrder(): List<UserRecordsListDetails>
+
     @Query("DELETE from ${AppDatabase.USER_RECORDS_TABLE}")
     suspend fun clearUserRecordsTable()
 

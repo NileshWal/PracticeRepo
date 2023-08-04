@@ -6,8 +6,12 @@ import com.example.practiceapps.database.AppDatabase
 import com.example.practiceapps.database.model.UserRecordsListDetails
 import com.example.practiceapps.model.LoaderStatus
 import com.example.practiceapps.network.ApiInterface
+import com.example.practiceapps.utils.CommonUtils
 import com.example.practiceapps.utils.LogUtils
 import com.example.practiceapps.utils.ResponseStatus
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 class UserRecordsRepository @Inject constructor(
@@ -56,12 +60,22 @@ class UserRecordsRepository @Inject constructor(
 
                     val parsedArray = mutableStateListOf<UserRecordsListDetails>()
                     userRecordsResponse.users.forEachIndexed { index, usersRecords ->
+
+                        val sdf =
+                            SimpleDateFormat(CommonUtils.DATE_TIME_FORMAT_API, Locale.getDefault())
+                        val output = SimpleDateFormat(
+                            CommonUtils.DATE_TIME_FORMAT_REQUIRED,
+                            Locale.getDefault()
+                        )
+                        val d: Date = usersRecords.dateOfBirth?.let { sdf.parse(it) } ?: Date()
+                        val formattedTime: String = output.format(d)
+
                         val data = UserRecordsListDetails(
                             usersRecords.id,
                             usersRecords.firstName,
                             usersRecords.lastName,
                             usersRecords.gender,
-                            usersRecords.dateOfBirth,
+                            formattedTime,
                             usersRecords.email,
                             usersRecords.phone,
                             usersRecords.street,
@@ -100,6 +114,24 @@ class UserRecordsRepository @Inject constructor(
      * */
     private suspend fun insertIntoTable(userRecordsListDetails: UserRecordsListDetails) {
         appDatabase.UserRecordsDataDao().insertIntoTable(userRecordsListDetails)
+    }
+
+    suspend fun fetchUserRecordsAscendingOrder() {
+        val ascendingList = appDatabase.UserRecordsDataDao().fetchUserRecordsAscendingOrder()
+        if (_userRecordsLiveData.size > 0) {
+            _userRecordsLiveData.clear()
+        }
+        _userRecordsLiveData.addAll(ascendingList.toMutableList())
+        _loaderLiveData.postValue(LoaderStatus(false, ResponseStatus.NO_ISSUE))
+    }
+
+    suspend fun fetchUserRecordsDescendingOrder() {
+        val descendingList = appDatabase.UserRecordsDataDao().fetchUserRecordsDescendingOrder()
+        if (_userRecordsLiveData.size > 0) {
+            _userRecordsLiveData.clear()
+        }
+        _userRecordsLiveData.addAll(descendingList.toMutableList())
+        _loaderLiveData.postValue(LoaderStatus(false, ResponseStatus.NO_ISSUE))
     }
 
     /**

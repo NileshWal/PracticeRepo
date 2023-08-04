@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -25,8 +27,11 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.practiceapps.R
@@ -90,6 +95,25 @@ class UserRecordsFragment : Fragment() {
     }
 
     /**
+     * This function will call the User List API.
+     *
+     * @param context Context is needed to check if the device has internet for the API call.
+     * */
+    private fun fetchOrderedListFromDB(context: Context, isAscending: Boolean) {
+        showLoader(true)
+        if (CommonUtils.isConnected(context)) {
+            if (isAscending) {
+                viewModel.makeUserListAscending()
+            } else {
+                viewModel.makeUserListDescending()
+            }
+        } else {
+            showLoader(false)
+            CommonUtils.showToastMessage(context, getString(R.string.no_internet))
+        }
+    }
+
+    /**
      * This function will either show or make the loader disappear.
      *
      * @param shouldShow Boolean parameter to make the loader visible or gone.
@@ -107,9 +131,42 @@ class UserRecordsFragment : Fragment() {
     private fun PublicApiComposeView(apiEntriesLiveData: SnapshotStateList<UserRecordsListDetails>) {
         Scaffold(
             content = {
-                LazyColumn {
-                    items(items = apiEntriesLiveData) { item ->
-                        PublicApisListItem(item)
+                Row {
+                    Column(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .fillMaxWidth()
+                            .align(Alignment.CenterVertically)
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp)
+                        ) {
+                            Button(onClick =
+                            { fetchOrderedListFromDB(requireActivity(), true) })
+                            {
+                                Text(
+                                    text = "Ascending",
+                                    style = TextStyle(fontSize = 15.sp)
+                                )
+                            }
+                            Button(onClick =
+                            { fetchOrderedListFromDB(requireActivity(), false) })
+                            {
+                                Text(
+                                    text = "Descending",
+                                    style = TextStyle(fontSize = 15.sp)
+                                )
+                            }
+                        }
+
+                        LazyColumn {
+                            items(items = apiEntriesLiveData) { item ->
+                                PublicApisListItem(item)
+                            }
+                        }
                     }
                 }
             }
@@ -129,7 +186,7 @@ class UserRecordsFragment : Fragment() {
                 .fillMaxWidth()
                 .wrapContentHeight(),
             elevation = 2.dp,
-            backgroundColor = colorResource(R.color.blue),
+            backgroundColor = colorResource(R.color.blue_light_tint),
             shape = RoundedCornerShape(8.dp)
         ) {
             Row {
@@ -137,72 +194,78 @@ class UserRecordsFragment : Fragment() {
                     modifier = Modifier
                         .padding(16.dp)
                         .fillMaxWidth()
+                        .wrapContentHeight()
                         .align(Alignment.CenterVertically)
                 ) {
-                    Row {
-                        CustomTextView("Name: ", FontWeight.Bold)
-                        CustomTextView(
-                            userRecordsListDetails.firstName.toString()
-                                    + " "
-                                    + userRecordsListDetails.lastName.toString()
-                        )
-                    }
-                    Row {
-                        CustomTextView("Gender: ", FontWeight.Bold)
-                        CustomTextView(userRecordsListDetails.gender.toString())
-                    }
-                    Row {
-                        CustomTextView("DoB: ", FontWeight.Bold)
-                        CustomTextView(userRecordsListDetails.dateOfBirth.toString())
-                    }
-                    Row {
-                        CustomTextView("Email & Phone: ", FontWeight.Bold)
-                        CustomTextView(
-                            userRecordsListDetails.email.toString()
-                                    + " "
-                                    + userRecordsListDetails.phone.toString()
-                        )
-                    }
-                    Row {
-                        CustomTextView("Address: ", FontWeight.Bold)
-                        CustomTextView(
-                            userRecordsListDetails.street.toString()
-                                    + " "
-                                    + userRecordsListDetails.city.toString()
-                                    + " "
-                                    + userRecordsListDetails.state.toString()
-                                    + " "
-                                    + userRecordsListDetails.country.toString()
-                                    + " "
-                                    + userRecordsListDetails.zipcode.toString()
-                                    + " "
-                                    + userRecordsListDetails.latitude.toString()
-                                    + " "
-                                    + userRecordsListDetails.longitude.toString()
-                        )
-                    }
-                    Row {
-                        CustomTextView("Job: ", FontWeight.Bold)
-                        CustomTextView(userRecordsListDetails.job.toString())
-                    }
+                    CustomRowTextView(
+                        "Name: ",
+                        userRecordsListDetails.firstName.toString()
+                                + " "
+                                + userRecordsListDetails.lastName.toString()
+                    )
+
+                    CustomRowTextView("Gender: ", userRecordsListDetails.gender.toString())
+                    CustomRowTextView("DoB: ", userRecordsListDetails.dateOfBirth.toString())
+                    CustomRowTextView(
+                        "Email & Phone: ",
+                        userRecordsListDetails.email.toString()
+                                + ", "
+                                + userRecordsListDetails.phone.toString()
+                    )
+                    CustomRowTextView(
+                        "Address: ",
+                        userRecordsListDetails.street.toString()
+                                + ", "
+                                + userRecordsListDetails.city.toString()
+                                + ", "
+                                + userRecordsListDetails.state.toString()
+                                + ", "
+                                + userRecordsListDetails.country.toString()
+                                + ", "
+                                + userRecordsListDetails.zipcode.toString()
+                                + ", "
+                                + userRecordsListDetails.latitude.toString()
+                                + " - "
+                                + userRecordsListDetails.longitude.toString()
+                    )
+                    CustomRowTextView("Job: ", userRecordsListDetails.job.toString())
                 }
             }
         }
     }
 
+
     /**
      * This function will create custom attributes for Text.
      *
-     * @param text The text to display.
-     * @param font The type of FontWeight we need for the text.
+     * @param textTitle The text to display.
+     * @param textValue The type of FontWeight we need for the text.
      * */
     @Composable
-    private fun CustomTextView(text: String, font: FontWeight = FontWeight.Normal) {
-        Text(
-            text = text,
-            color = colorResource(R.color.black),
-            fontWeight = font
-        )
+    private fun CustomRowTextView(textTitle: String, textValue: String) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(2.dp)
+        ) {
+            Text(
+                text = textTitle,
+                textAlign = TextAlign.Start,
+                color = colorResource(R.color.black),
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.weight(1f)
+            )
+            Text(
+                text = textValue,
+                textAlign = TextAlign.Start,
+                color = colorResource(R.color.black),
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier.weight(1f)
+            )
+        }
+
+
     }
 
     companion object {

@@ -24,9 +24,11 @@ class AppModule {
         AppDatabase.getInstance(context)
 
     @Provides
+    @Singleton
     fun providesNetworkInstance(): ApiInterface = NetworkInstance.getInstance()
 
     @Provides
+    @Singleton
     fun providesPhotoDetailsListRepository(
         networkInstance: ApiInterface,
         appDatabase: AppDatabase
@@ -34,6 +36,7 @@ class AppModule {
         PhotoDetailsListRepository(networkInstance, appDatabase)
 
     @Provides
+    @Singleton
     fun providesUserRecordsRepository(
         networkInstance: ApiInterface,
         appDatabase: AppDatabase

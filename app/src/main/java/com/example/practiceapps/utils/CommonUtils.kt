@@ -7,6 +7,9 @@ import android.widget.Toast
 
 object CommonUtils {
 
+    const val DATE_TIME_FORMAT_API = "yyyy-MM-dd'T'HH:mm:ss"
+    const val DATE_TIME_FORMAT_REQUIRED = "yyyy-MM-dd"
+
     fun isConnected(context: Context): Boolean {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
