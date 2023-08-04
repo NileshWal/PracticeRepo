@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,7 +17,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -27,11 +28,10 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.practiceapps.R
@@ -134,34 +134,11 @@ class UserRecordsFragment : Fragment() {
                 Row {
                     Column(
                         modifier = Modifier
-                            .padding(16.dp)
+                            .padding(6.dp, 8.dp, 6.dp, 8.dp)
                             .fillMaxWidth()
                             .align(Alignment.CenterVertically)
                     ) {
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                        ) {
-                            Button(onClick =
-                            { fetchOrderedListFromDB(requireActivity(), true) })
-                            {
-                                Text(
-                                    text = "Ascending",
-                                    style = TextStyle(fontSize = 15.sp)
-                                )
-                            }
-                            Button(onClick =
-                            { fetchOrderedListFromDB(requireActivity(), false) })
-                            {
-                                Text(
-                                    text = "Descending",
-                                    style = TextStyle(fontSize = 15.sp)
-                                )
-                            }
-                        }
-
+                        ReorderView()
                         LazyColumn {
                             items(items = apiEntriesLiveData) { item ->
                                 PublicApisListItem(item)
@@ -264,8 +241,28 @@ class UserRecordsFragment : Fragment() {
                 modifier = Modifier.weight(1f)
             )
         }
+    }
 
+    @Composable
+    private fun ReorderView() {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
+            Image(
+                painterResource(R.drawable.ascending),
+                contentDescription = "Ascend",
+                modifier = Modifier.clickable { fetchOrderedListFromDB(requireActivity(), true) }
+            )
 
+            Image(
+                painterResource(R.drawable.descending),
+                contentDescription = "Descend",
+                modifier = Modifier.clickable { fetchOrderedListFromDB(requireActivity(), false) }
+            )
+        }
     }
 
     companion object {
