@@ -112,9 +112,9 @@ class UserRecordsRepository @Inject constructor(
     /**
      * This function will insert all the data received by API call into the DB in USER_RECORDS_TABLE.
      * */
-    private suspend fun insertIntoTable(userRecordsListDetails: UserRecordsListDetails) {
+    private suspend fun insertIntoTable(userRecordsListDetails: UserRecordsListDetails) =
         appDatabase.UserRecordsDataDao().insertIntoTable(userRecordsListDetails)
-    }
+
 
     suspend fun fetchUserRecordsAscendingOrder() {
         val ascendingList = appDatabase.UserRecordsDataDao().fetchUserRecordsAscendingOrder()

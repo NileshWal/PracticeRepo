@@ -1,5 +1,6 @@
 package com.example.practiceapps.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,9 +19,9 @@ class PhotoDetailsListViewModel @Inject constructor(photoDetailsListRepository: 
     ViewModel() {
 
     private val mUserListRepository = photoDetailsListRepository
-    val userListLiveData: MutableLiveData<MutableList<PhotoDetails>> =
+    val userListLiveData: LiveData<MutableList<PhotoDetails>> =
         mUserListRepository.getImageListLivedata()
-    val loaderLiveData: MutableLiveData<LoaderStatus> = mUserListRepository.getLoaderLivedata()
+    val loaderLiveData: LiveData<LoaderStatus> = mUserListRepository.getLoaderLivedata()
 
     /**
      * This function is used to make the API call from the UserListRepository for User lists.
@@ -29,30 +30,25 @@ class PhotoDetailsListViewModel @Inject constructor(photoDetailsListRepository: 
      * @param limit This limits the number of results (for better performance and speed).
      *              The default value is 10.
      * */
-    fun callUsersApi(offset: Int, limit: Int) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                mUserListRepository.makeRemoteImageListCall(offset, limit)
-            }
+    fun callUsersApi(offset: Int, limit: Int) = viewModelScope.launch {
+        withContext(Dispatchers.IO) {
+            mUserListRepository.makeRemoteImageListCall(offset, limit)
         }
     }
+
 
     /**
      * This function will fetch data in ascending order the UserListRepository.
      * */
-    fun makeUserListAscending() {
-        viewModelScope.launch {
-            mUserListRepository.fetchAscendingUserListFromDB()
-        }
+    fun makeUserListAscending() = viewModelScope.launch {
+        mUserListRepository.fetchAscendingUserListFromDB()
     }
 
     /**
      * This function will fetch data in descending order from the UserListRepository.
      * */
-    fun makeUserListDescending() {
-        viewModelScope.launch {
-            mUserListRepository.fetchDescendingUserListFromDB()
-        }
+    fun makeUserListDescending() = viewModelScope.launch {
+        mUserListRepository.fetchDescendingUserListFromDB()
     }
 
 }

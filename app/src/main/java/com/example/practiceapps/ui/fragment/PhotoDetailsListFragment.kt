@@ -12,17 +12,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.practiceapps.R
 import com.example.practiceapps.databinding.FragmentPhotoListBinding
 import com.example.practiceapps.ui.adapter.PhotoDetailsAdapter
-import com.example.practiceapps.viewmodel.PhotoDetailsListViewModel
 import com.example.practiceapps.utils.CommonUtils
 import com.example.practiceapps.utils.LogUtils
 import com.example.practiceapps.utils.ResponseStatus
+import com.example.practiceapps.viewmodel.PhotoDetailsListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.Collections
 import java.util.LinkedList
 import java.util.Stack
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -31,7 +31,9 @@ class PhotoDetailsListFragment : Fragment() {
     private val screenName = PhotoDetailsListFragment::class.java.simpleName
     private lateinit var binding: FragmentPhotoListBinding
     private val viewModel: PhotoDetailsListViewModel by viewModels()
-    private lateinit var adapter: PhotoDetailsAdapter
+
+    @Inject
+    lateinit var adapter: PhotoDetailsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,9 +52,6 @@ class PhotoDetailsListFragment : Fragment() {
      * This function will set adapter on the RecyclerView to list the users from API.
      * */
     private fun setupAdapter() {
-        val initialList = viewModel.userListLiveData.value?.let { Collections.unmodifiableList(it) }
-            ?: mutableListOf()
-        adapter = PhotoDetailsAdapter(requireActivity(), initialList)
         binding.userListRV.setHasFixedSize(true)
         binding.userListRV.layoutManager = LinearLayoutManager(requireActivity())
         binding.userListRV.adapter = adapter

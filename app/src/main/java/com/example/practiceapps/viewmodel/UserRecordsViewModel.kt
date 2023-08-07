@@ -26,30 +26,24 @@ class UserRecordsViewModel @Inject constructor(userRecordsRepository: UserRecord
     /**
      * This function is used to make the API call for Api Entry list.
      * */
-    fun callUserRecordsApi(offset: Int, limit: Int) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                mUserRecordsRepository.makeRemoteUserRecordsCall(offset, limit)
-            }
+    fun callUserRecordsApi(offset: Int, limit: Int) = viewModelScope.launch {
+        withContext(Dispatchers.IO) {
+            mUserRecordsRepository.makeRemoteUserRecordsCall(offset, limit)
         }
     }
 
     /**
      * This function will fetch data in ascending order the UserRecordsRepository.
      * */
-    fun makeUserListAscending() {
-        viewModelScope.launch {
-            mUserRecordsRepository.fetchUserRecordsAscendingOrder()
-        }
+    fun makeUserListAscending() = viewModelScope.launch {
+        mUserRecordsRepository.fetchUserRecordsAscendingOrder()
     }
 
     /**
      * This function will fetch data in descending order from the UserRecordsRepository.
      * */
-    fun makeUserListDescending() {
-        viewModelScope.launch {
-            mUserRecordsRepository.fetchUserRecordsDescendingOrder()
-        }
+    fun makeUserListDescending() = viewModelScope.launch {
+        mUserRecordsRepository.fetchUserRecordsDescendingOrder()
     }
 
 }

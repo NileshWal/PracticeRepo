@@ -6,6 +6,7 @@ import com.example.practiceapps.network.ApiInterface
 import com.example.practiceapps.network.NetworkInstance
 import com.example.practiceapps.repository.PhotoDetailsListRepository
 import com.example.practiceapps.repository.UserRecordsRepository
+import com.example.practiceapps.ui.adapter.PhotoDetailsAdapter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -42,4 +43,9 @@ class AppModule {
         appDatabase: AppDatabase
     ): UserRecordsRepository =
         UserRecordsRepository(networkInstance, appDatabase)
+
+    @Provides
+    @Singleton
+    fun providesPhotoDetailsAdapter(@ApplicationContext context: Context): PhotoDetailsAdapter =
+        PhotoDetailsAdapter(context, mutableListOf())
 }

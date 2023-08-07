@@ -70,12 +70,10 @@ class UserRecordsFragment : Fragment() {
     /**
      * This function will set the livedata observables to listen to the change in loader value.
      * */
-    private fun setUpLiveData() {
-        viewModel.loaderLiveData.observe(this) {
-            showLoader(it.shouldShow)
-            if (it.responseStatus != ResponseStatus.NO_ISSUE) {
-                CommonUtils.showToastMessage(requireActivity(), it.responseStatus.toString())
-            }
+    private fun setUpLiveData() = viewModel.loaderLiveData.observe(this) {
+        showLoader(it.shouldShow)
+        if (it.responseStatus != ResponseStatus.NO_ISSUE) {
+            CommonUtils.showToastMessage(requireActivity(), it.responseStatus.toString())
         }
     }
 

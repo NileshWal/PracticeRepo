@@ -91,9 +91,9 @@ class PhotoDetailsListRepository @Inject constructor(
      *
      * @param photoDetails The ImageListPhotos object.
      * */
-    private suspend fun insertIntoTable(photoDetails: PhotoDetails) {
+    private suspend fun insertIntoTable(photoDetails: PhotoDetails) =
         appDatabase.imageListDataDao().insertIntoTable(photoDetails)
-    }
+
 
     /**
      * This function will make DB call to fetch data in ascending order from PHOTO_DETAILS_LIST_TABLE.
