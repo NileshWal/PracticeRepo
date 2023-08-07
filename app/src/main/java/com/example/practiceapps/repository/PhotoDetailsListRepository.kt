@@ -1,5 +1,6 @@
 package com.example.practiceapps.repository
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.practiceapps.database.AppDatabase
 import com.example.practiceapps.database.model.PhotoDetails
@@ -18,9 +19,8 @@ class PhotoDetailsListRepository @Inject constructor(
     private val screenName = PhotoDetailsListRepository::class.java.simpleName
     private val _loaderLiveData = MutableLiveData<LoaderStatus>()
     private val _imageListLiveData = MutableLiveData<MutableList<PhotoDetails>>()
-
-    fun getLoaderLivedata() = _loaderLiveData
-    fun getImageListLivedata() = _imageListLiveData
+    val loaderLiveData: LiveData<LoaderStatus> = _loaderLiveData
+    val imageListLiveData: LiveData<MutableList<PhotoDetails>> = _imageListLiveData
 
     /**
      * This function is used to make the API call for Image lists.
@@ -31,51 +31,61 @@ class PhotoDetailsListRepository @Inject constructor(
      * */
     suspend fun makeRemoteImageListCall(offset: Int, limit: Int) {
         val imageListRequest = networkInstance.fetchImageList(offset, limit)
-        val imageListResult = imageListRequest.execute()
+        try {
+            val imageListResult = imageListRequest.execute()
 
-        LogUtils.e(screenName, "response code ${imageListResult.code()}")
+            LogUtils.e(screenName, "response code ${imageListResult.code()}")
 
-        if (imageListResult.isSuccessful && imageListResult.code() == 200) {
-            LogUtils.e(
-                screenName, "imageListResult ${imageListResult.body().toString()}"
-            )
-            imageListResult.body()?.let { imageResponse ->
-                if (imageResponse.photos.isEmpty()) {
-                    _loaderLiveData.postValue(
-                        LoaderStatus(
-                            false,
-                            ResponseStatus.EMPTY_API_LIST
+            if (imageListResult.isSuccessful && imageListResult.code() == 200) {
+                LogUtils.e(
+                    screenName, "imageListResult ${imageListResult.body().toString()}"
+                )
+                imageListResult.body()?.let { imageResponse ->
+                    if (imageResponse.photos.isEmpty()) {
+                        _loaderLiveData.postValue(
+                            LoaderStatus(
+                                false,
+                                ResponseStatus.EMPTY_API_LIST
+                            )
                         )
-                    )
-                } else {
-                    val parsedArray = ArrayList<PhotoDetails>()
+                    } else {
+                        val parsedArray = ArrayList<PhotoDetails>()
 
-                    //Clear the DB of already existing user list.
-                    clearImageListDB()
+                        //Clear the DB of already existing user list.
+                        clearImageListDB()
 
-                    imageResponse.photos.forEach { imageDetail ->
-                        val data = PhotoDetails(
-                            imageDetail.description,
-                            imageDetail.url,
-                            imageDetail.title,
-                            imageDetail.id,
-                            imageDetail.user
+                        imageResponse.photos.forEach { imageDetail ->
+                            val data = PhotoDetails(
+                                imageDetail.description,
+                                imageDetail.url,
+                                imageDetail.title,
+                                imageDetail.id,
+                                imageDetail.user
+                            )
+                            parsedArray.add(data)
+                            //Add user details to DB.
+                            insertIntoTable(data)
+                        }
+                        //Add user details to livedata.
+                        _imageListLiveData.postValue(parsedArray)
+                        _loaderLiveData.postValue(
+                            LoaderStatus(
+                                false,
+                                ResponseStatus.NO_ISSUE
+                            )
                         )
-                        parsedArray.add(data)
-                        //Add user details to DB.
-                        insertIntoTable(data)
                     }
-                    //Add user details to livedata.
-                    _imageListLiveData.postValue(parsedArray)
-                    _loaderLiveData.postValue(
-                        LoaderStatus(
-                            false,
-                            ResponseStatus.NO_ISSUE
-                        )
-                    )
                 }
+            } else {
+                _loaderLiveData.postValue(
+                    LoaderStatus(
+                        false,
+                        ResponseStatus.API_ERROR
+                    )
+                )
             }
-        } else {
+        } catch (e: Exception) {
+            e.printStackTrace()
             _loaderLiveData.postValue(
                 LoaderStatus(
                     false,

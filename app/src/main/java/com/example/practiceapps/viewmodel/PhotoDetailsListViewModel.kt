@@ -1,7 +1,6 @@
 package com.example.practiceapps.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.practiceapps.database.model.PhotoDetails
@@ -20,8 +19,8 @@ class PhotoDetailsListViewModel @Inject constructor(photoDetailsListRepository: 
 
     private val mUserListRepository = photoDetailsListRepository
     val userListLiveData: LiveData<MutableList<PhotoDetails>> =
-        mUserListRepository.getImageListLivedata()
-    val loaderLiveData: LiveData<LoaderStatus> = mUserListRepository.getLoaderLivedata()
+        mUserListRepository.imageListLiveData
+    val loaderLiveData: LiveData<LoaderStatus> = mUserListRepository.loaderLiveData
 
     /**
      * This function is used to make the API call from the UserListRepository for User lists.

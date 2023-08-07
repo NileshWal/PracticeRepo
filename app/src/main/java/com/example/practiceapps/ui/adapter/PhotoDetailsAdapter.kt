@@ -13,12 +13,12 @@ import javax.inject.Inject
 
 class PhotoDetailsAdapter @Inject constructor(
     context: Context,
-    photoDetailList: MutableList<PhotoDetails>
+    photoDetailList: List<PhotoDetails>
 ) :
     RecyclerView.Adapter<PhotoDetailsAdapter.PhotoDetailsViewHolder>() {
 
     private val mContext = context
-    private var mPhotoDetailList: MutableList<PhotoDetails> = photoDetailList
+    private var mPhotoDetailList: MutableList<PhotoDetails> = photoDetailList.toMutableList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoDetailsViewHolder {
         val binding =

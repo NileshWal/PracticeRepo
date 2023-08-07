@@ -36,70 +36,83 @@ class UserRecordsRepository @Inject constructor(
      * */
     suspend fun makeRemoteUserRecordsCall(offset: Int, limit: Int) {
         val userRecordsRequest = networkInstance.fetchUserRecords(offset, limit)
-        val userRecordsResult = userRecordsRequest.execute()
+        try {
+            val userRecordsResult = userRecordsRequest.execute()
 
-        LogUtils.e(screenName, "response code ${userRecordsResult.code()}")
+            LogUtils.e(screenName, "response code ${userRecordsResult.code()}")
 
-        if (userRecordsResult.isSuccessful && userRecordsResult.code() == 200) {
-            LogUtils.e(
-                screenName,
-                "userRecordsResult ${userRecordsResult.body().toString()}"
-            )
-            userRecordsResult.body()?.let { userRecordsResponse ->
-                if (userRecordsResponse.users.isEmpty()) {
-                    _loaderLiveData.postValue(
-                        LoaderStatus(
-                            false,
-                            ResponseStatus.EMPTY_API_LIST
+            if (userRecordsResult.isSuccessful && userRecordsResult.code() == 200) {
+                LogUtils.e(
+                    screenName,
+                    "userRecordsResult ${userRecordsResult.body().toString()}"
+                )
+                userRecordsResult.body()?.let { userRecordsResponse ->
+                    if (userRecordsResponse.users.isEmpty()) {
+                        _loaderLiveData.postValue(
+                            LoaderStatus(
+                                false,
+                                ResponseStatus.EMPTY_API_LIST
+                            )
                         )
-                    )
-                } else {
+                    } else {
 
-                    //Clear the DB of already existing API list.
-                    clearUserRecordsDB()
+                        //Clear the DB of already existing API list.
+                        clearUserRecordsDB()
 
-                    val parsedArray = mutableStateListOf<UserRecordsListDetails>()
-                    userRecordsResponse.users.forEachIndexed { index, usersRecords ->
+                        val parsedArray = mutableStateListOf<UserRecordsListDetails>()
+                        userRecordsResponse.users.forEachIndexed { index, usersRecords ->
 
-                        val sdf =
-                            SimpleDateFormat(CommonUtils.DATE_TIME_FORMAT_API, Locale.getDefault())
-                        val output = SimpleDateFormat(
-                            CommonUtils.DATE_TIME_FORMAT_REQUIRED,
-                            Locale.getDefault()
+                            val sdf =
+                                SimpleDateFormat(
+                                    CommonUtils.DATE_TIME_FORMAT_API,
+                                    Locale.getDefault()
+                                )
+                            val output = SimpleDateFormat(
+                                CommonUtils.DATE_TIME_FORMAT_REQUIRED,
+                                Locale.getDefault()
+                            )
+                            val d: Date = usersRecords.dateOfBirth?.let { sdf.parse(it) } ?: Date()
+                            val formattedTime: String = output.format(d)
+
+                            val data = UserRecordsListDetails(
+                                usersRecords.id,
+                                usersRecords.firstName,
+                                usersRecords.lastName,
+                                usersRecords.gender,
+                                formattedTime,
+                                usersRecords.email,
+                                usersRecords.phone,
+                                usersRecords.street,
+                                usersRecords.city,
+                                usersRecords.state,
+                                usersRecords.country,
+                                usersRecords.zipcode,
+                                usersRecords.job,
+                                usersRecords.longitude,
+                                usersRecords.latitude
+                            )
+                            parsedArray.add(data)
+                            _userRecordsLiveData.add(index, data)
+                            insertIntoTable(data)
+                        }
+                        _loaderLiveData.postValue(
+                            LoaderStatus(
+                                false,
+                                ResponseStatus.NO_ISSUE
+                            )
                         )
-                        val d: Date = usersRecords.dateOfBirth?.let { sdf.parse(it) } ?: Date()
-                        val formattedTime: String = output.format(d)
-
-                        val data = UserRecordsListDetails(
-                            usersRecords.id,
-                            usersRecords.firstName,
-                            usersRecords.lastName,
-                            usersRecords.gender,
-                            formattedTime,
-                            usersRecords.email,
-                            usersRecords.phone,
-                            usersRecords.street,
-                            usersRecords.city,
-                            usersRecords.state,
-                            usersRecords.country,
-                            usersRecords.zipcode,
-                            usersRecords.job,
-                            usersRecords.longitude,
-                            usersRecords.latitude
-                        )
-                        parsedArray.add(data)
-                        _userRecordsLiveData.add(index, data)
-                        insertIntoTable(data)
                     }
-                    _loaderLiveData.postValue(
-                        LoaderStatus(
-                            false,
-                            ResponseStatus.NO_ISSUE
-                        )
-                    )
                 }
+            } else {
+                _loaderLiveData.postValue(
+                    LoaderStatus(
+                        false,
+                        ResponseStatus.API_ERROR
+                    )
+                )
             }
-        } else {
+        } catch (e: Exception) {
+            e.printStackTrace()
             _loaderLiveData.postValue(
                 LoaderStatus(
                     false,
