@@ -4,10 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.practiceapps.database.AppDatabase
 import com.example.practiceapps.database.model.PhotoDetails
-import com.example.practiceapps.model.LoaderStatus
 import com.example.practiceapps.network.ApiInterface
+import com.example.practiceapps.network.NetworkResultState
+import com.example.practiceapps.network.ResponseClass
+import com.example.practiceapps.network.ResponseStatus
 import com.example.practiceapps.utils.LogUtils
-import com.example.practiceapps.utils.ResponseStatus
 import javax.inject.Inject
 
 
@@ -17,10 +18,10 @@ class PhotoDetailsListRepository @Inject constructor(
 ) {
 
     private val screenName = PhotoDetailsListRepository::class.java.simpleName
-    private val _loaderLiveData = MutableLiveData<LoaderStatus>()
-    private val _imageListLiveData = MutableLiveData<MutableList<PhotoDetails>>()
-    val loaderLiveData: LiveData<LoaderStatus> = _loaderLiveData
-    val imageListLiveData: LiveData<MutableList<PhotoDetails>> = _imageListLiveData
+
+    private val _imageListMutableLiveData = MutableLiveData<MutableList<ResponseClass.Photos>>()
+    val imageListLiveData: LiveData<MutableList<ResponseClass.Photos>> =
+        _imageListMutableLiveData
 
     /**
      * This function is used to make the API call for Image lists.
@@ -29,71 +30,29 @@ class PhotoDetailsListRepository @Inject constructor(
      * @param limit This limits the number of results (for better performance and speed).
      *              The default value is 10.
      * */
-    suspend fun makeRemoteImageListCall(offset: Int, limit: Int) {
+    fun makeRemoteImageListCall(
+        offset: Int,
+        limit: Int
+    ): NetworkResultState<ResponseClass.PhotoListResponse> {
         val imageListRequest = networkInstance.fetchImageList(offset, limit)
         try {
             val imageListResult = imageListRequest.execute()
-
             LogUtils.e(screenName, "response code ${imageListResult.code()}")
-
             if (imageListResult.isSuccessful && imageListResult.code() == 200) {
                 LogUtils.e(
                     screenName, "imageListResult ${imageListResult.body().toString()}"
                 )
-                imageListResult.body()?.let { imageResponse ->
-                    if (imageResponse.photos.isEmpty()) {
-                        _loaderLiveData.postValue(
-                            LoaderStatus(
-                                false,
-                                ResponseStatus.EMPTY_API_LIST
-                            )
-                        )
-                    } else {
-                        val parsedArray = ArrayList<PhotoDetails>()
-
-                        //Clear the DB of already existing user list.
-                        clearImageListDB()
-
-                        imageResponse.photos.forEach { imageDetail ->
-                            val data = PhotoDetails(
-                                imageDetail.description,
-                                imageDetail.url,
-                                imageDetail.title,
-                                imageDetail.id,
-                                imageDetail.user
-                            )
-                            parsedArray.add(data)
-                            //Add user details to DB.
-                            insertIntoTable(data)
-                        }
-                        //Add user details to livedata.
-                        _imageListLiveData.postValue(parsedArray)
-                        _loaderLiveData.postValue(
-                            LoaderStatus(
-                                false,
-                                ResponseStatus.NO_ISSUE
-                            )
-                        )
-                    }
-                }
+                imageListResult.body()?.let {
+                    _imageListMutableLiveData.postValue(it.photos)
+                    return NetworkResultState.Success(ResponseStatus.NO_ISSUE.toString(), it)
+                } ?: return NetworkResultState.Error(ResponseStatus.EMPTY_API_LIST.toString())
             } else {
-                _loaderLiveData.postValue(
-                    LoaderStatus(
-                        false,
-                        ResponseStatus.API_ERROR
-                    )
-                )
+                return NetworkResultState.Error(ResponseStatus.API_ERROR.toString())
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            _loaderLiveData.postValue(
-                LoaderStatus(
-                    false,
-                    ResponseStatus.API_ERROR
-                )
-            )
+            return NetworkResultState.Error(ResponseStatus.API_ERROR.toString())
         }
-
     }
 
     /**
@@ -101,32 +60,25 @@ class PhotoDetailsListRepository @Inject constructor(
      *
      * @param photoDetails The ImageListPhotos object.
      * */
-    private suspend fun insertIntoTable(photoDetails: PhotoDetails) =
+    suspend fun insertIntoTable(photoDetails: PhotoDetails) =
         appDatabase.imageListDataDao().insertIntoTable(photoDetails)
-
 
     /**
      * This function will make DB call to fetch data in ascending order from PHOTO_DETAILS_LIST_TABLE.
      * */
-    suspend fun fetchAscendingUserListFromDB() {
-        val ascendingList = appDatabase.imageListDataDao().arrangeInAscendingOrder()
-        _imageListLiveData.postValue(ascendingList.toMutableList())
-        _loaderLiveData.postValue(LoaderStatus(false, ResponseStatus.NO_ISSUE))
-    }
+    suspend fun fetchAscendingUserListFromDB(): List<PhotoDetails> =
+        appDatabase.imageListDataDao().arrangeInAscendingOrder()
 
     /**
      * This function will make DB call to fetch data in descending order form PHOTO_DETAILS_LIST_TABLE.
      * */
-    suspend fun fetchDescendingUserListFromDB() {
-        val descendingList = appDatabase.imageListDataDao().arrangeInDescendingOrder()
-        _imageListLiveData.postValue(descendingList.toMutableList())
-        _loaderLiveData.postValue(LoaderStatus(false, ResponseStatus.NO_ISSUE))
-    }
+    suspend fun fetchDescendingUserListFromDB(): List<PhotoDetails> =
+        appDatabase.imageListDataDao().arrangeInDescendingOrder()
 
     /**
      * This function will clear the PHOTO_DETAILS_LIST_TABLE from DB.
      * */
-    private suspend fun clearImageListDB() {
+    suspend fun clearImageListDB() {
         if (appDatabase.imageListDataDao().getImageListCount() > 0) {
             appDatabase.imageListDataDao().clearImageListTable()
         }

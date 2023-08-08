@@ -13,9 +13,9 @@ interface ApiInterface {
     ): Call<ResponseClass.PhotoListResponse>
 
     @GET("users")
-    fun fetchUserRecords(
+    suspend fun fetchUserRecords(
         @Query("offset") offset: Int = 0,
         @Query("limit") limit: Int = 10
-    ): Call<ResponseClass.UserRecordsResponse>
+    ): ResponseClass.UserRecordsResponse
 
 }

@@ -1,4 +1,4 @@
-package com.example.practiceapps.utils
+package com.example.practiceapps.network
 
 
 enum class ResponseStatus {

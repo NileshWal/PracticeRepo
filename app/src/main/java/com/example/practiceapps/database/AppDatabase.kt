@@ -23,7 +23,6 @@ abstract class AppDatabase : RoomDatabase() {
     companion object {
 
         private lateinit var appDatabase: AppDatabase
-
         private const val AAP_DB_NAME = "APP_DATABASE"
         const val PHOTO_DETAILS_LIST_TABLE = "PHOTO_DETAILS_LIST"
         const val USER_RECORDS_TABLE = "USER_RECORDS"

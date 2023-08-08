@@ -14,7 +14,7 @@ import com.example.practiceapps.databinding.FragmentPhotoListBinding
 import com.example.practiceapps.ui.adapter.PhotoDetailsAdapter
 import com.example.practiceapps.utils.CommonUtils
 import com.example.practiceapps.utils.LogUtils
-import com.example.practiceapps.utils.ResponseStatus
+import com.example.practiceapps.network.ResponseStatus
 import com.example.practiceapps.viewmodel.PhotoDetailsListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -90,7 +90,7 @@ class PhotoDetailsListFragment : Fragment() {
      * values and loader value.
      * */
     private fun setupLivedata() {
-        viewModel.userListLiveData.observe(this) {
+        viewModel.photoDetailsListLiveData.observe(this) {
             adapter.refreshUserList(it)
         }
         viewModel.loaderLiveData.observe(this) {

@@ -38,7 +38,7 @@ import com.example.practiceapps.R
 import com.example.practiceapps.database.model.UserRecordsListDetails
 import com.example.practiceapps.databinding.FragmentUserRecordsBinding
 import com.example.practiceapps.utils.CommonUtils
-import com.example.practiceapps.utils.ResponseStatus
+import com.example.practiceapps.network.ResponseStatus
 import com.example.practiceapps.viewmodel.UserRecordsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
