@@ -36,13 +36,14 @@ class UserRecordsViewModel @Inject constructor(userRecordsRepository: UserRecord
      * */
     fun callUserRecordsApi(offset: Int, limit: Int) = viewModelScope.launch {
         withContext(Dispatchers.IO) {
-            when (mUserRecordsRepository.makeRemoteUserRecordsCall(offset, limit)) {
+            when (val apiResponse =
+                mUserRecordsRepository.makeRemoteUserRecordsCall(offset, limit)) {
                 is NetworkResultState.Success -> {
                     //Clear the DB of already existing API list.
                     mUserRecordsRepository.clearUserRecordsDB()
                     val parsedArray = mutableStateListOf<UserRecordsListDetails>()
-                    mUserRecordsRepository.getUserRecordsLivedata().value?.let {
-                        if (it.isEmpty()) {
+                    apiResponse.let {
+                        if (it.data.users.isEmpty()) {
                             _loaderLiveData.postValue(
                                 LoaderStatus(
                                     false,
@@ -50,7 +51,7 @@ class UserRecordsViewModel @Inject constructor(userRecordsRepository: UserRecord
                                 )
                             )
                         } else {
-                            it.forEachIndexed { index, usersRecords ->
+                            it.data.users.forEachIndexed { index, usersRecords ->
                                 val data = UserRecordsListDetails(
                                     usersRecords.id,
                                     usersRecords.firstName,
@@ -79,12 +80,7 @@ class UserRecordsViewModel @Inject constructor(userRecordsRepository: UserRecord
                                 )
                             )
                         }
-                    } ?: _loaderLiveData.postValue(
-                        LoaderStatus(
-                            false,
-                            ResponseStatus.API_ERROR
-                        )
-                    )
+                    }
                 }
 
                 is NetworkResultState.Error -> {

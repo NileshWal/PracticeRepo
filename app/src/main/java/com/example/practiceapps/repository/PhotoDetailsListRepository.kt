@@ -56,7 +56,8 @@ class PhotoDetailsListRepository @Inject constructor(
     }
 
     /**
-     * This function will insert all the data received by API call into the DB in PHOTO_DETAILS_LIST_TABLE.
+     * This function will insert all the data received by API call into the DB in
+     * PHOTO_DETAILS_LIST_TABLE.
      *
      * @param photoDetails The ImageListPhotos object.
      * */
@@ -64,13 +65,15 @@ class PhotoDetailsListRepository @Inject constructor(
         appDatabase.imageListDataDao().insertIntoTable(photoDetails)
 
     /**
-     * This function will make DB call to fetch data in ascending order from PHOTO_DETAILS_LIST_TABLE.
+     * This function will make DB call to fetch data in ascending order from
+     * PHOTO_DETAILS_LIST_TABLE.
      * */
     suspend fun fetchAscendingUserListFromDB(): List<PhotoDetails> =
         appDatabase.imageListDataDao().arrangeInAscendingOrder()
 
     /**
-     * This function will make DB call to fetch data in descending order form PHOTO_DETAILS_LIST_TABLE.
+     * This function will make DB call to fetch data in descending order form
+     * PHOTO_DETAILS_LIST_TABLE.
      * */
     suspend fun fetchDescendingUserListFromDB(): List<PhotoDetails> =
         appDatabase.imageListDataDao().arrangeInDescendingOrder()

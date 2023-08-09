@@ -1,6 +1,5 @@
 package com.example.practiceapps.repository
 
-import androidx.lifecycle.MutableLiveData
 import com.example.practiceapps.database.AppDatabase
 import com.example.practiceapps.database.model.UserRecordsListDetails
 import com.example.practiceapps.network.ApiInterface
@@ -17,9 +16,6 @@ class UserRecordsRepository @Inject constructor(
 
     private val screenName = UserRecordsRepository::class.java.simpleName
 
-    private val _userRecordsMutableLiveData = MutableLiveData<MutableList<ResponseClass.Users>>()
-    fun getUserRecordsLivedata() = _userRecordsMutableLiveData
-
     /**
      * This function is used to make the API call for Api Entry list.
      *
@@ -32,22 +28,28 @@ class UserRecordsRepository @Inject constructor(
         offset: Int,
         limit: Int
     ): NetworkResultState<ResponseClass.UserRecordsResponse> {
-        val userRecordsRequest = networkInstance.fetchUserRecords(offset, limit)
-        return try {
-            LogUtils.e(screenName, "response userRecordsRequest $userRecordsRequest")
-            _userRecordsMutableLiveData.postValue(userRecordsRequest.users)
-            NetworkResultState.Success(
-                ResponseStatus.NO_ISSUE.toString(),
-                userRecordsRequest
-            )
+        try {
+            val userRecordsResponse = networkInstance.fetchUserRecords(offset, limit)
+            LogUtils.e(screenName, "userRecordsResponse code ${userRecordsResponse.code()}")
+            return if (userRecordsResponse.isSuccessful && userRecordsResponse.code() == 200) {
+                LogUtils.e(
+                    screenName, "userRecordsResponse ${userRecordsResponse.body().toString()}"
+                )
+                return userRecordsResponse.body()?.let {
+                    NetworkResultState.Success(ResponseStatus.NO_ISSUE.toString(), it)
+                } ?: NetworkResultState.Error(ResponseStatus.API_ERROR.toString())
+            } else {
+                NetworkResultState.Error(ResponseStatus.API_ERROR.toString())
+            }
         } catch (e: Exception) {
             e.printStackTrace()
-            NetworkResultState.Error(ResponseStatus.API_ERROR.toString())
+            return NetworkResultState.Error(ResponseStatus.API_ERROR.toString())
         }
     }
 
     /**
-     * This function will insert all the data received by API call into the DB in USER_RECORDS_TABLE.
+     * This function will insert all the data received by API call into the DB in
+     * USER_RECORDS_TABLE.
      * */
     suspend fun insertIntoTable(userRecordsListDetails: UserRecordsListDetails) =
         appDatabase.UserRecordsDataDao().insertIntoTable(userRecordsListDetails)
