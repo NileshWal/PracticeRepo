@@ -17,8 +17,8 @@ import com.example.practiceapps.database.model.UserRecordsListDetails
 )
 abstract class AppDatabase : RoomDatabase() {
 
-    abstract fun imageListDataDao(): PhotoListDataDao
-    abstract fun UserRecordsDataDao(): UserRecordsDataDao
+    abstract fun photoDetailsListDataDao(): PhotoListDataDao
+    abstract fun userRecordsDataDao(): UserRecordsDataDao
 
     companion object {
 

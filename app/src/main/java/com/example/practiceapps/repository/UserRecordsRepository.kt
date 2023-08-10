@@ -52,26 +52,26 @@ class UserRecordsRepository @Inject constructor(
      * USER_RECORDS_TABLE.
      * */
     suspend fun insertIntoTable(userRecordsListDetails: UserRecordsListDetails) =
-        appDatabase.UserRecordsDataDao().insertIntoTable(userRecordsListDetails)
+        appDatabase.userRecordsDataDao().insertIntoTable(userRecordsListDetails)
 
     /**
      * This function will fetch data in ascending order from USER_RECORDS_TABLE.
      * */
-    suspend fun fetchUserRecordsAscendingOrder() =
-        appDatabase.UserRecordsDataDao().fetchUserRecordsAscendingOrder()
+    suspend fun fetchAscendingListFromDB() =
+        appDatabase.userRecordsDataDao().fetchUserRecordsAscendingOrder()
 
     /**
      * This function will fetch data in descending order from USER_RECORDS_TABLE.
      * */
-    suspend fun fetchUserRecordsDescendingOrder() =
-        appDatabase.UserRecordsDataDao().fetchUserRecordsDescendingOrder()
+    suspend fun fetchDescendingListFromDB() =
+        appDatabase.userRecordsDataDao().fetchUserRecordsDescendingOrder()
 
     /**
      * This function will clear the USER_RECORDS_TABLE from DB.
      * */
     suspend fun clearUserRecordsDB() {
-        if (appDatabase.UserRecordsDataDao().fetchUserRecordsCount() > 0) {
-            appDatabase.UserRecordsDataDao().clearUserRecordsTable()
+        if (appDatabase.userRecordsDataDao().fetchUserRecordsCount() > 0) {
+            appDatabase.userRecordsDataDao().clearUserRecordsTable()
         }
     }
 

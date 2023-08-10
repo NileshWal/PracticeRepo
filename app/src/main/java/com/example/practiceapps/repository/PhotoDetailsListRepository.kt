@@ -19,9 +19,10 @@ class PhotoDetailsListRepository @Inject constructor(
 
     private val screenName = PhotoDetailsListRepository::class.java.simpleName
 
-    private val _imageListMutableLiveData = MutableLiveData<MutableList<ResponseClass.Photos>>()
-    val imageListLiveData: LiveData<MutableList<ResponseClass.Photos>> =
-        _imageListMutableLiveData
+    private val _photoDetailsListMutableLiveData =
+        MutableLiveData<MutableList<ResponseClass.Photos>>()
+    val photoDetailsListLiveData: LiveData<MutableList<ResponseClass.Photos>> =
+        _photoDetailsListMutableLiveData
 
     /**
      * This function is used to make the API call for Image lists.
@@ -30,24 +31,24 @@ class PhotoDetailsListRepository @Inject constructor(
      * @param limit This limits the number of results (for better performance and speed).
      *              The default value is 10.
      * */
-    fun makeRemoteImageListCall(
+    fun makeRemotePhotoDetailsListCall(
         offset: Int,
         limit: Int
     ): NetworkResultState<ResponseClass.PhotoListResponse> {
-        val imageListRequest = networkInstance.fetchImageList(offset, limit)
+        val photoDetailsListRequest = networkInstance.fetchImageList(offset, limit)
         try {
-            val imageListResult = imageListRequest.execute()
-            LogUtils.e(screenName, "response code ${imageListResult.code()}")
-            if (imageListResult.isSuccessful && imageListResult.code() == 200) {
+            val photoDetailsListResult = photoDetailsListRequest.execute()
+            LogUtils.e(screenName, "response code ${photoDetailsListResult.code()}")
+            return if (photoDetailsListResult.isSuccessful && photoDetailsListResult.code() == 200) {
                 LogUtils.e(
-                    screenName, "imageListResult ${imageListResult.body().toString()}"
+                    screenName, "imageListResult ${photoDetailsListResult.body().toString()}"
                 )
-                imageListResult.body()?.let {
-                    _imageListMutableLiveData.postValue(it.photos)
-                    return NetworkResultState.Success(ResponseStatus.NO_ISSUE.toString(), it)
-                } ?: return NetworkResultState.Error(ResponseStatus.EMPTY_API_LIST.toString())
+                return photoDetailsListResult.body()?.let {
+                    _photoDetailsListMutableLiveData.postValue(it.photos)
+                    NetworkResultState.Success(ResponseStatus.NO_ISSUE.toString(), it)
+                } ?: NetworkResultState.Error(ResponseStatus.EMPTY_API_LIST.toString())
             } else {
-                return NetworkResultState.Error(ResponseStatus.API_ERROR.toString())
+                NetworkResultState.Error(ResponseStatus.API_ERROR.toString())
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -62,28 +63,28 @@ class PhotoDetailsListRepository @Inject constructor(
      * @param photoDetails The ImageListPhotos object.
      * */
     suspend fun insertIntoTable(photoDetails: PhotoDetails) =
-        appDatabase.imageListDataDao().insertIntoTable(photoDetails)
+        appDatabase.photoDetailsListDataDao().insertIntoTable(photoDetails)
 
     /**
      * This function will make DB call to fetch data in ascending order from
      * PHOTO_DETAILS_LIST_TABLE.
      * */
-    suspend fun fetchAscendingUserListFromDB(): List<PhotoDetails> =
-        appDatabase.imageListDataDao().arrangeInAscendingOrder()
+    suspend fun fetchAscendingListFromDB(): List<PhotoDetails> =
+        appDatabase.photoDetailsListDataDao().arrangeInAscendingOrder()
 
     /**
      * This function will make DB call to fetch data in descending order form
      * PHOTO_DETAILS_LIST_TABLE.
      * */
-    suspend fun fetchDescendingUserListFromDB(): List<PhotoDetails> =
-        appDatabase.imageListDataDao().arrangeInDescendingOrder()
+    suspend fun fetchDescendingListFromDB(): List<PhotoDetails> =
+        appDatabase.photoDetailsListDataDao().arrangeInDescendingOrder()
 
     /**
      * This function will clear the PHOTO_DETAILS_LIST_TABLE from DB.
      * */
-    suspend fun clearImageListDB() {
-        if (appDatabase.imageListDataDao().getImageListCount() > 0) {
-            appDatabase.imageListDataDao().clearImageListTable()
+    suspend fun clearPhotoDetailsListDB() {
+        if (appDatabase.photoDetailsListDataDao().getPhotoDetailsListCount() > 0) {
+            appDatabase.photoDetailsListDataDao().clearPhotoDetailsListTable()
         }
     }
 

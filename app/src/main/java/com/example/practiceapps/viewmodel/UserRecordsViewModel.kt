@@ -99,7 +99,7 @@ class UserRecordsViewModel @Inject constructor(userRecordsRepository: UserRecord
      * This function will fetch data in ascending order the UserRecordsRepository.
      * */
     fun makeUserListAscending() = viewModelScope.launch {
-        val ascendingList = mUserRecordsRepository.fetchUserRecordsAscendingOrder()
+        val ascendingList = mUserRecordsRepository.fetchAscendingListFromDB()
         if (_userRecordsLiveData.size > 0) {
             _userRecordsLiveData.clear()
         }
@@ -111,7 +111,7 @@ class UserRecordsViewModel @Inject constructor(userRecordsRepository: UserRecord
      * This function will fetch data in descending order from the UserRecordsRepository.
      * */
     fun makeUserListDescending() = viewModelScope.launch {
-        val descendingList = mUserRecordsRepository.fetchUserRecordsDescendingOrder()
+        val descendingList = mUserRecordsRepository.fetchDescendingListFromDB()
         if (_userRecordsLiveData.size > 0) {
             _userRecordsLiveData.clear()
         }

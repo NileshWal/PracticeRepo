@@ -19,9 +19,9 @@ interface PhotoListDataDao {
     suspend fun arrangeInDescendingOrder(): List<PhotoDetails>
 
     @Query("SELECT count(*) from ${AppDatabase.PHOTO_DETAILS_LIST_TABLE}")
-    suspend fun getImageListCount(): Int
+    suspend fun getPhotoDetailsListCount(): Int
 
     @Query("DELETE from ${AppDatabase.PHOTO_DETAILS_LIST_TABLE}")
-    suspend fun clearImageListTable()
+    suspend fun clearPhotoDetailsListTable()
 
 }

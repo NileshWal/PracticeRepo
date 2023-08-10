@@ -38,12 +38,12 @@ class PhotoDetailsListViewModel @Inject constructor(photoDetailsListRepository: 
      * */
     fun callUsersApi(offset: Int, limit: Int) = viewModelScope.launch {
         withContext(Dispatchers.IO) {
-            when (mPhotoDetailsListRepository.makeRemoteImageListCall(offset, limit)) {
+            when (mPhotoDetailsListRepository.makeRemotePhotoDetailsListCall(offset, limit)) {
                 is NetworkResultState.Success -> {
                     val parsedArray = ArrayList<PhotoDetails>()
                     //Clear the DB of already existing user list.
-                    mPhotoDetailsListRepository.clearImageListDB()
-                    mPhotoDetailsListRepository.imageListLiveData.value?.let {
+                    mPhotoDetailsListRepository.clearPhotoDetailsListDB()
+                    mPhotoDetailsListRepository.photoDetailsListLiveData.value?.let {
                         if (it.isEmpty()) {
                             _loaderMutableLiveData.postValue(
                                 LoaderStatus(
@@ -96,8 +96,8 @@ class PhotoDetailsListViewModel @Inject constructor(photoDetailsListRepository: 
     /**
      * This function will fetch data in ascending order the UserListRepository.
      * */
-    fun makeUserListAscending() = viewModelScope.launch {
-        val ascendingList = mPhotoDetailsListRepository.fetchAscendingUserListFromDB()
+    fun makePhotoDetailsListAscending() = viewModelScope.launch {
+        val ascendingList = mPhotoDetailsListRepository.fetchAscendingListFromDB()
         _photoDetailsListMutableLiveData.postValue(ascendingList.toMutableList())
         _loaderMutableLiveData.postValue(LoaderStatus(false, ResponseStatus.NO_ISSUE))
     }
@@ -105,8 +105,8 @@ class PhotoDetailsListViewModel @Inject constructor(photoDetailsListRepository: 
     /**
      * This function will fetch data in descending order from the UserListRepository.
      * */
-    fun makeUserListDescending() = viewModelScope.launch {
-        val descendingList = mPhotoDetailsListRepository.fetchDescendingUserListFromDB()
+    fun makePhotoDetailsListDescending() = viewModelScope.launch {
+        val descendingList = mPhotoDetailsListRepository.fetchDescendingListFromDB()
         _photoDetailsListMutableLiveData.postValue(descendingList.toMutableList())
         _loaderMutableLiveData.postValue(LoaderStatus(false, ResponseStatus.NO_ISSUE))
     }

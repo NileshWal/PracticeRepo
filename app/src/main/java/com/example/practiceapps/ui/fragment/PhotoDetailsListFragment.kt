@@ -11,24 +11,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.practiceapps.R
 import com.example.practiceapps.databinding.FragmentPhotoListBinding
+import com.example.practiceapps.network.ResponseStatus
 import com.example.practiceapps.ui.adapter.PhotoDetailsAdapter
 import com.example.practiceapps.utils.CommonUtils
-import com.example.practiceapps.utils.LogUtils
-import com.example.practiceapps.network.ResponseStatus
 import com.example.practiceapps.viewmodel.PhotoDetailsListViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.util.LinkedList
-import java.util.Stack
 import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class PhotoDetailsListFragment : Fragment() {
 
-    private val screenName = PhotoDetailsListFragment::class.java.simpleName
     private lateinit var binding: FragmentPhotoListBinding
     private val viewModel: PhotoDetailsListViewModel by viewModels()
 
@@ -55,19 +48,6 @@ class PhotoDetailsListFragment : Fragment() {
         binding.userListRV.setHasFixedSize(true)
         binding.userListRV.layoutManager = LinearLayoutManager(requireActivity())
         binding.userListRV.adapter = adapter
-
-
-        val animals = LinkedList<String>()
-        animals.add("Dog")
-        animals.add("Cat")
-        animals.add("Cow")
-        LogUtils.e(screenName, "LinkedList: $animals")
-
-        val stackEx = Stack<Int>()
-        stackEx.push(1)
-        stackEx.push(4)
-        stackEx.push(46)
-
     }
 
     /**
@@ -142,12 +122,9 @@ class PhotoDetailsListFragment : Fragment() {
     private fun sortUserList(isAscending: Boolean) {
         showLoader(true)
         if (isAscending) {
-            viewModel.makeUserListAscending()
+            viewModel.makePhotoDetailsListAscending()
         } else {
-            viewModel.makeUserListDescending()
-        }
-        CoroutineScope(Dispatchers.IO).launch {
-            coroutineContext
+            viewModel.makePhotoDetailsListDescending()
         }
     }
 
