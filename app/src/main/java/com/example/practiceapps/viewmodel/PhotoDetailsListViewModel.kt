@@ -38,13 +38,14 @@ class PhotoDetailsListViewModel @Inject constructor(photoDetailsListRepository: 
      * */
     fun callUsersApi(offset: Int, limit: Int) = viewModelScope.launch {
         withContext(Dispatchers.IO) {
-            when (mPhotoDetailsListRepository.makeRemotePhotoDetailsListCall(offset, limit)) {
+            when (val apiResponse =
+                mPhotoDetailsListRepository.makeRemotePhotoDetailsListCall(offset, limit)) {
                 is NetworkResultState.Success -> {
                     val parsedArray = ArrayList<PhotoDetails>()
                     //Clear the DB of already existing user list.
                     mPhotoDetailsListRepository.clearPhotoDetailsListDB()
-                    mPhotoDetailsListRepository.photoDetailsListLiveData.value?.let {
-                        if (it.isEmpty()) {
+                    apiResponse.data.let {
+                        if (it.photos.isEmpty()) {
                             _loaderMutableLiveData.postValue(
                                 LoaderStatus(
                                     false,
@@ -52,7 +53,7 @@ class PhotoDetailsListViewModel @Inject constructor(photoDetailsListRepository: 
                                 )
                             )
                         } else {
-                            it.forEach { imageDetail ->
+                            it.photos.forEach { imageDetail ->
                                 val data = PhotoDetails(
                                     imageDetail.description,
                                     imageDetail.url,
@@ -73,12 +74,7 @@ class PhotoDetailsListViewModel @Inject constructor(photoDetailsListRepository: 
                                 ResponseStatus.NO_ISSUE
                             )
                         )
-                    } ?: _loaderMutableLiveData.postValue(
-                        LoaderStatus(
-                            false,
-                            ResponseStatus.API_ERROR
-                        )
-                    )
+                    }
                 }
 
                 is NetworkResultState.Error -> {
@@ -90,6 +86,16 @@ class PhotoDetailsListViewModel @Inject constructor(photoDetailsListRepository: 
                     )
                 }
             }
+
+            when (val apiResponse =
+                mPhotoDetailsListRepository.makeRemoteProductsListCall(offset, limit)) {
+                is NetworkResultState.Success -> {
+                }
+
+                is NetworkResultState.Error -> {
+                }
+            }
+
         }
     }
 

@@ -1,6 +1,5 @@
 package com.example.practiceapps.repository
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.practiceapps.database.AppDatabase
 import com.example.practiceapps.database.model.PhotoDetails
@@ -21,8 +20,6 @@ class PhotoDetailsListRepository @Inject constructor(
 
     private val _photoDetailsListMutableLiveData =
         MutableLiveData<MutableList<ResponseClass.Photos>>()
-    val photoDetailsListLiveData: LiveData<MutableList<ResponseClass.Photos>> =
-        _photoDetailsListMutableLiveData
 
     /**
      * This function is used to make the API call for Image lists.
@@ -35,16 +32,47 @@ class PhotoDetailsListRepository @Inject constructor(
         offset: Int,
         limit: Int
     ): NetworkResultState<ResponseClass.PhotoListResponse> {
-        val photoDetailsListRequest = networkInstance.fetchImageList(offset, limit)
+        val photoDetailsListRequest = networkInstance.fetchPhotoDetailsList(offset, limit)
         try {
             val photoDetailsListResult = photoDetailsListRequest.execute()
             LogUtils.e(screenName, "response code ${photoDetailsListResult.code()}")
             return if (photoDetailsListResult.isSuccessful && photoDetailsListResult.code() == 200) {
                 LogUtils.e(
-                    screenName, "imageListResult ${photoDetailsListResult.body().toString()}"
+                    screenName, "photoDetailsListResult ${photoDetailsListResult.body().toString()}"
                 )
                 return photoDetailsListResult.body()?.let {
                     _photoDetailsListMutableLiveData.postValue(it.photos)
+                    NetworkResultState.Success(ResponseStatus.NO_ISSUE.toString(), it)
+                } ?: NetworkResultState.Error(ResponseStatus.EMPTY_API_LIST.toString())
+            } else {
+                NetworkResultState.Error(ResponseStatus.API_ERROR.toString())
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return NetworkResultState.Error(ResponseStatus.API_ERROR.toString())
+        }
+    }
+
+    /**
+     * This function is used to make the API call for Products lists.
+     *
+     * @param offset Determines whether to start returning data. The default value is 0.
+     * @param limit This limits the number of results (for better performance and speed).
+     *              The default value is 10.
+     * */
+    fun makeRemoteProductsListCall(
+        offset: Int,
+        limit: Int
+    ): NetworkResultState<ResponseClass.ProductsResponse> {
+        val productsListRequest = networkInstance.fetchProductsList(offset, limit)
+        try {
+            val productsListResult = productsListRequest.execute()
+            LogUtils.e(screenName, "response code ${productsListResult.code()}")
+            return if (productsListResult.isSuccessful && productsListResult.code() == 200) {
+                LogUtils.e(
+                    screenName, "productsListResult ${productsListResult.body().toString()}"
+                )
+                return productsListResult.body()?.let {
                     NetworkResultState.Success(ResponseStatus.NO_ISSUE.toString(), it)
                 } ?: NetworkResultState.Error(ResponseStatus.EMPTY_API_LIST.toString())
             } else {

@@ -49,4 +49,23 @@ class ResponseClass {
         @SerializedName("user") var user: Int? = null
     )
 
+    data class ProductsResponse(
+        @SerializedName("success") var success: Boolean? = null,
+        @SerializedName("message") var message: String? = null,
+        @SerializedName("offset") var offset: Int? = null,
+        @SerializedName("limit") var limit: Int? = null,
+        @SerializedName("products") var products: ArrayList<Products> = arrayListOf()
+    )
+
+    data class Products(
+        @SerializedName("photo_url") var photoUrl: String? = null,
+        @SerializedName("description") var description: String? = null,
+        @SerializedName("id") var id: Int? = null,
+        @SerializedName("created_at") var createdAt: String? = null,
+        @SerializedName("updated_at") var updatedAt: String? = null,
+        @SerializedName("name") var name: String? = null,
+        @SerializedName("price") var price: Double? = null,
+        @SerializedName("category") var category: String? = null
+    )
+
 }

@@ -42,8 +42,8 @@ class UserRecordsViewModel @Inject constructor(userRecordsRepository: UserRecord
                     //Clear the DB of already existing API list.
                     mUserRecordsRepository.clearUserRecordsDB()
                     val parsedArray = mutableStateListOf<UserRecordsListDetails>()
-                    apiResponse.let {
-                        if (it.data.users.isEmpty()) {
+                    apiResponse.data.let {
+                        if (it.users.isEmpty()) {
                             _loaderLiveData.postValue(
                                 LoaderStatus(
                                     false,
@@ -51,7 +51,7 @@ class UserRecordsViewModel @Inject constructor(userRecordsRepository: UserRecord
                                 )
                             )
                         } else {
-                            it.data.users.forEachIndexed { index, usersRecords ->
+                            it.users.forEachIndexed { index, usersRecords ->
                                 val data = UserRecordsListDetails(
                                     usersRecords.id,
                                     usersRecords.firstName,
