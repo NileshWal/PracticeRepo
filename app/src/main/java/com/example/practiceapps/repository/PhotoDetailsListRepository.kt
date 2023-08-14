@@ -1,6 +1,5 @@
 package com.example.practiceapps.repository
 
-import androidx.lifecycle.MutableLiveData
 import com.example.practiceapps.database.AppDatabase
 import com.example.practiceapps.database.model.PhotoDetails
 import com.example.practiceapps.network.ApiInterface
@@ -17,9 +16,6 @@ class PhotoDetailsListRepository @Inject constructor(
 ) {
 
     private val screenName = PhotoDetailsListRepository::class.java.simpleName
-
-    private val _photoDetailsListMutableLiveData =
-        MutableLiveData<MutableList<ResponseClass.Photos>>()
 
     /**
      * This function is used to make the API call for Image lists.
@@ -41,7 +37,6 @@ class PhotoDetailsListRepository @Inject constructor(
                     screenName, "photoDetailsListResult ${photoDetailsListResult.body().toString()}"
                 )
                 return photoDetailsListResult.body()?.let {
-                    _photoDetailsListMutableLiveData.postValue(it.photos)
                     NetworkResultState.Success(ResponseStatus.NO_ISSUE.toString(), it)
                 } ?: NetworkResultState.Error(ResponseStatus.EMPTY_API_LIST.toString())
             } else {

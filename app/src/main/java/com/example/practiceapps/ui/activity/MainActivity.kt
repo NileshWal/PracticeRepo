@@ -10,6 +10,8 @@ import com.example.practiceapps.R
 import com.example.practiceapps.databinding.ActivityMainBinding
 import com.example.practiceapps.ui.fragment.PhotoDetailsListFragment
 import com.example.practiceapps.ui.fragment.UserRecordsFragment
+import com.example.practiceapps.utils.CommonUtils.safeSubString
+import com.example.practiceapps.utils.LogUtils
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -17,6 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
+    private val screenName = MainActivity::class.java.simpleName
     private lateinit var binding: ActivityMainBinding
     private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
 
@@ -27,6 +30,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setUpNavDrawer()
         setDefaultFragment()
         customOnBackPressDispatcher()
+        val subStr = "Hello World".safeSubString("Hello World", 1, 3)
+        LogUtils.e(screenName, subStr)
     }
 
     /**

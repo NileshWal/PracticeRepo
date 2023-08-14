@@ -38,4 +38,16 @@ object CommonUtils {
         return output.format(d)
     }
 
+    fun String.safeSubString(actualString: String, initialVal: Int, finalVal: Int): String =
+        if (actualString.isNotEmpty()
+            && initialVal <= actualString.length
+            && finalVal <= actualString.length
+            && initialVal != 0
+            && finalVal != 0
+            && initialVal < finalVal
+        ) {
+            actualString.substring(initialVal, finalVal)
+        } else ""
+
+
 }

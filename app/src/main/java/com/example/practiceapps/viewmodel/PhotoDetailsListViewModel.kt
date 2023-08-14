@@ -12,6 +12,7 @@ import com.example.practiceapps.repository.PhotoDetailsListRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -38,64 +39,68 @@ class PhotoDetailsListViewModel @Inject constructor(photoDetailsListRepository: 
      * */
     fun callUsersApi(offset: Int, limit: Int) = viewModelScope.launch {
         withContext(Dispatchers.IO) {
-            when (val apiResponse =
-                mPhotoDetailsListRepository.makeRemotePhotoDetailsListCall(offset, limit)) {
-                is NetworkResultState.Success -> {
-                    val parsedArray = ArrayList<PhotoDetails>()
-                    //Clear the DB of already existing user list.
-                    mPhotoDetailsListRepository.clearPhotoDetailsListDB()
-                    apiResponse.data.let {
-                        if (it.photos.isEmpty()) {
-                            _loaderMutableLiveData.postValue(
-                                LoaderStatus(
-                                    false,
-                                    ResponseStatus.EMPTY_API_LIST
-                                )
-                            )
-                        } else {
-                            it.photos.forEach { imageDetail ->
-                                val data = PhotoDetails(
-                                    imageDetail.description,
-                                    imageDetail.url,
-                                    imageDetail.title,
-                                    imageDetail.id,
-                                    imageDetail.user
-                                )
-                                parsedArray.add(data)
-                                //Add user details to DB.
-                                mPhotoDetailsListRepository.insertIntoTable(data)
-                            }
+            supervisorScope {
+                launch {
+                    when (mPhotoDetailsListRepository.makeRemoteProductsListCall(offset, limit)) {
+                        is NetworkResultState.Success -> {
                         }
-                        //Add user details to livedata.
-                        _photoDetailsListMutableLiveData.postValue(parsedArray)
-                        _loaderMutableLiveData.postValue(
-                            LoaderStatus(
-                                false,
-                                ResponseStatus.NO_ISSUE
-                            )
-                        )
+
+                        is NetworkResultState.Error -> {
+                        }
                     }
                 }
 
-                is NetworkResultState.Error -> {
-                    _loaderMutableLiveData.postValue(
-                        LoaderStatus(
-                            false,
-                            ResponseStatus.API_ERROR
-                        )
-                    )
+                launch {
+                    when (val apiResponse =
+                        mPhotoDetailsListRepository.makeRemotePhotoDetailsListCall(offset, limit)) {
+                        is NetworkResultState.Success -> {
+                            val parsedArray = ArrayList<PhotoDetails>()
+                            //Clear the DB of already existing user list.
+                            mPhotoDetailsListRepository.clearPhotoDetailsListDB()
+                            apiResponse.data.let {
+                                if (it.photos.isEmpty()) {
+                                    _loaderMutableLiveData.postValue(
+                                        LoaderStatus(
+                                            false,
+                                            ResponseStatus.EMPTY_API_LIST
+                                        )
+                                    )
+                                } else {
+                                    it.photos.forEach { imageDetail ->
+                                        val data = PhotoDetails(
+                                            imageDetail.description,
+                                            imageDetail.url,
+                                            imageDetail.title,
+                                            imageDetail.id,
+                                            imageDetail.user
+                                        )
+                                        parsedArray.add(data)
+                                        //Add user details to DB.
+                                        mPhotoDetailsListRepository.insertIntoTable(data)
+                                    }
+                                }
+                                //Add user details to livedata.
+                                _photoDetailsListMutableLiveData.postValue(parsedArray)
+                                _loaderMutableLiveData.postValue(
+                                    LoaderStatus(
+                                        false,
+                                        ResponseStatus.NO_ISSUE
+                                    )
+                                )
+                            }
+                        }
+
+                        is NetworkResultState.Error -> {
+                            _loaderMutableLiveData.postValue(
+                                LoaderStatus(
+                                    false,
+                                    ResponseStatus.API_ERROR
+                                )
+                            )
+                        }
+                    }
                 }
             }
-
-            when (val apiResponse =
-                mPhotoDetailsListRepository.makeRemoteProductsListCall(offset, limit)) {
-                is NetworkResultState.Success -> {
-                }
-
-                is NetworkResultState.Error -> {
-                }
-            }
-
         }
     }
 
