@@ -6,6 +6,7 @@ import com.example.practiceapps.network.ApiInterface
 import com.example.practiceapps.network.NetworkResultState
 import com.example.practiceapps.network.ResponseClass
 import com.example.practiceapps.network.ResponseStatus
+import com.example.practiceapps.utils.CommonUtils
 import com.example.practiceapps.utils.LogUtils
 import javax.inject.Inject
 
@@ -32,7 +33,9 @@ class PhotoDetailsListRepository @Inject constructor(
         try {
             val photoDetailsListResult = photoDetailsListRequest.execute()
             LogUtils.e(screenName, "response code ${photoDetailsListResult.code()}")
-            return if (photoDetailsListResult.isSuccessful && photoDetailsListResult.code() == 200) {
+            return if (photoDetailsListResult.isSuccessful && photoDetailsListResult.code()
+                == CommonUtils.HTTP_OK_STATUS
+            ) {
                 LogUtils.e(
                     screenName, "photoDetailsListResult ${photoDetailsListResult.body().toString()}"
                 )
@@ -63,7 +66,9 @@ class PhotoDetailsListRepository @Inject constructor(
         try {
             val productsListResult = productsListRequest.execute()
             LogUtils.e(screenName, "response code ${productsListResult.code()}")
-            return if (productsListResult.isSuccessful && productsListResult.code() == 200) {
+            return if (productsListResult.isSuccessful && productsListResult.code()
+                == CommonUtils.HTTP_OK_STATUS
+            ) {
                 LogUtils.e(
                     screenName, "productsListResult ${productsListResult.body().toString()}"
                 )
@@ -93,21 +98,21 @@ class PhotoDetailsListRepository @Inject constructor(
      * PHOTO_DETAILS_LIST_TABLE.
      * */
     suspend fun fetchAscendingListFromDB(): List<PhotoDetails> =
-        appDatabase.photoDetailsListDataDao().arrangeInAscendingOrder()
+        appDatabase.photoDetailsListDataDao().ascendingOrderEnteries()
 
     /**
      * This function will make DB call to fetch data in descending order form
      * PHOTO_DETAILS_LIST_TABLE.
      * */
     suspend fun fetchDescendingListFromDB(): List<PhotoDetails> =
-        appDatabase.photoDetailsListDataDao().arrangeInDescendingOrder()
+        appDatabase.photoDetailsListDataDao().descendingOrderEnteries()
 
     /**
      * This function will clear the PHOTO_DETAILS_LIST_TABLE from DB.
      * */
-    suspend fun clearPhotoDetailsListDB() {
-        if (appDatabase.photoDetailsListDataDao().getPhotoDetailsListCount() > 0) {
-            appDatabase.photoDetailsListDataDao().clearPhotoDetailsListTable()
+    suspend fun clearPhotoDetailsListTable() {
+        if (appDatabase.photoDetailsListDataDao().getTableListCount() > 0) {
+            appDatabase.photoDetailsListDataDao().clearTable()
         }
     }
 

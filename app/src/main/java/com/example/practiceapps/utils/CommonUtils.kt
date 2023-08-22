@@ -12,6 +12,7 @@ object CommonUtils {
 
     private const val DATE_TIME_FORMAT_API = "yyyy-MM-dd'T'HH:mm:ss"
     private const val DATE_TIME_FORMAT_REQUIRED = "yyyy-MM-dd"
+    const val HTTP_OK_STATUS = 200
 
     fun isConnected(context: Context): Boolean {
         val connectivityManager =

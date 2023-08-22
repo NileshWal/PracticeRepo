@@ -13,15 +13,15 @@ interface UserRecordsDataDao {
     suspend fun insertIntoTable(userRecordsListDetails: UserRecordsListDetails)
 
     @Query("SELECT count(*) from ${AppDatabase.USER_RECORDS_TABLE}")
-    suspend fun fetchUserRecordsCount(): Int
+    suspend fun getTableListCount(): Int
 
     @Query("SELECT * from ${AppDatabase.USER_RECORDS_TABLE} ORDER BY date_of_birth")
-    suspend fun fetchUserRecordsAscendingOrder(): List<UserRecordsListDetails>
+    suspend fun ascendingOrderEnteries(): List<UserRecordsListDetails>
 
     @Query("SELECT * from ${AppDatabase.USER_RECORDS_TABLE} ORDER BY date_of_birth DESC")
-    suspend fun fetchUserRecordsDescendingOrder(): List<UserRecordsListDetails>
+    suspend fun descendingOrderEnteries(): List<UserRecordsListDetails>
 
     @Query("DELETE from ${AppDatabase.USER_RECORDS_TABLE}")
-    suspend fun clearUserRecordsTable()
+    suspend fun clearTable()
 
 }

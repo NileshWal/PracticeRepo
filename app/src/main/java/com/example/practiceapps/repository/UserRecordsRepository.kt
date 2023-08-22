@@ -6,6 +6,7 @@ import com.example.practiceapps.network.ApiInterface
 import com.example.practiceapps.network.NetworkResultState
 import com.example.practiceapps.network.ResponseClass
 import com.example.practiceapps.network.ResponseStatus
+import com.example.practiceapps.utils.CommonUtils
 import com.example.practiceapps.utils.LogUtils
 import javax.inject.Inject
 
@@ -31,7 +32,9 @@ class UserRecordsRepository @Inject constructor(
         try {
             val userRecordsResponse = networkInstance.fetchUserRecords(offset, limit)
             LogUtils.e(screenName, "userRecordsResponse code ${userRecordsResponse.code()}")
-            return if (userRecordsResponse.isSuccessful && userRecordsResponse.code() == 200) {
+            return if (userRecordsResponse.isSuccessful && userRecordsResponse.code()
+                == CommonUtils.HTTP_OK_STATUS
+            ) {
                 LogUtils.e(
                     screenName, "userRecordsResponse ${userRecordsResponse.body().toString()}"
                 )
@@ -58,20 +61,20 @@ class UserRecordsRepository @Inject constructor(
      * This function will fetch data in ascending order from USER_RECORDS_TABLE.
      * */
     suspend fun fetchAscendingListFromDB() =
-        appDatabase.userRecordsDataDao().fetchUserRecordsAscendingOrder()
+        appDatabase.userRecordsDataDao().ascendingOrderEnteries()
 
     /**
      * This function will fetch data in descending order from USER_RECORDS_TABLE.
      * */
     suspend fun fetchDescendingListFromDB() =
-        appDatabase.userRecordsDataDao().fetchUserRecordsDescendingOrder()
+        appDatabase.userRecordsDataDao().descendingOrderEnteries()
 
     /**
      * This function will clear the USER_RECORDS_TABLE from DB.
      * */
     suspend fun clearUserRecordsDB() {
-        if (appDatabase.userRecordsDataDao().fetchUserRecordsCount() > 0) {
-            appDatabase.userRecordsDataDao().clearUserRecordsTable()
+        if (appDatabase.userRecordsDataDao().getTableListCount() > 0) {
+            appDatabase.userRecordsDataDao().clearTable()
         }
     }
 

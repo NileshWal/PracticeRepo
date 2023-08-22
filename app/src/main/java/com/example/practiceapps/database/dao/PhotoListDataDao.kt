@@ -13,15 +13,15 @@ interface PhotoListDataDao {
     suspend fun insertIntoTable(photoDetails: PhotoDetails)
 
     @Query("select * from ${AppDatabase.PHOTO_DETAILS_LIST_TABLE} ORDER BY id ASC")
-    suspend fun arrangeInAscendingOrder(): List<PhotoDetails>
+    suspend fun ascendingOrderEnteries(): List<PhotoDetails>
 
     @Query("select * from ${AppDatabase.PHOTO_DETAILS_LIST_TABLE} ORDER BY id DESC")
-    suspend fun arrangeInDescendingOrder(): List<PhotoDetails>
+    suspend fun descendingOrderEnteries(): List<PhotoDetails>
 
     @Query("SELECT count(*) from ${AppDatabase.PHOTO_DETAILS_LIST_TABLE}")
-    suspend fun getPhotoDetailsListCount(): Int
+    suspend fun getTableListCount(): Int
 
     @Query("DELETE from ${AppDatabase.PHOTO_DETAILS_LIST_TABLE}")
-    suspend fun clearPhotoDetailsListTable()
+    suspend fun clearTable()
 
 }

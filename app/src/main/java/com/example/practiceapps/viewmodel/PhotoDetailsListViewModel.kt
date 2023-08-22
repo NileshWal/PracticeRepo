@@ -56,7 +56,7 @@ class PhotoDetailsListViewModel @Inject constructor(photoDetailsListRepository: 
                         is NetworkResultState.Success -> {
                             val parsedArray = ArrayList<PhotoDetails>()
                             //Clear the DB of already existing user list.
-                            mPhotoDetailsListRepository.clearPhotoDetailsListDB()
+                            mPhotoDetailsListRepository.clearPhotoDetailsListTable()
                             apiResponse.data.let {
                                 if (it.photos.isEmpty()) {
                                     _loaderMutableLiveData.postValue(
