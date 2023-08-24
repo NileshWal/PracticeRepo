@@ -10,10 +10,15 @@ import java.util.Locale
 
 object CommonUtils {
 
-    private const val DATE_TIME_FORMAT_API = "yyyy-MM-dd'T'HH:mm:ss"
-    private const val DATE_TIME_FORMAT_REQUIRED = "yyyy-MM-dd"
+    const val DATE_TIME_FORMAT_API = "yyyy-MM-dd'T'HH:mm:ss"
+    const val DATE_TIME_FORMAT_REQUIRED = "yyyy-MM-dd"
     const val HTTP_OK_STATUS = 200
 
+    /**
+     * This function will check if device is connected to internet.
+     *
+     * @param context Context object.
+     * */
     fun isConnected(context: Context): Boolean {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -21,34 +26,40 @@ object CommonUtils {
         return netInfo != null && netInfo.isConnected
     }
 
+    /**
+     * This function will show toast message for long duration.
+     *
+     * @param context Context object.
+     * @param message String message to be displayed.
+     * */
     fun showToastMessage(context: Context, message: String) {
         Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }
 
-    fun formattedDate(dateOfBirth: String?): String {
-        val sdf =
-            SimpleDateFormat(
-                DATE_TIME_FORMAT_API,
-                Locale.getDefault()
-            )
-        val output = SimpleDateFormat(
-            DATE_TIME_FORMAT_REQUIRED,
-            Locale.getDefault()
-        )
-        val d: Date = dateOfBirth?.let { sdf.parse(it) } ?: Date()
-        return output.format(d)
+    /**
+     * This function will parse the date from current pattern to required pattern.
+     *
+     * @param dateOfBirth Nullable date of birth string to be formatted to desired pattern.
+     * @param currentDatePattern Current pattern of String type.
+     * @param requiredDatePattern Required pattern of String type.
+     * */
+    fun dateFormatParser(
+        dateOfBirth: String?,
+        currentDatePattern: String,
+        requiredDatePattern: String
+    ): String {
+        val dateFormatter = simpleDateFormatInstance(currentDatePattern)
+        val parsedDate: Date = dateOfBirth?.let { dateFormatter.parse(it) } ?: Date()
+        return simpleDateFormatInstance(requiredDatePattern).format(parsedDate)
     }
 
-    fun String.safeSubString(actualString: String, initialVal: Int, finalVal: Int): String =
-        if (actualString.isNotEmpty()
-            && initialVal <= actualString.length
-            && finalVal <= actualString.length
-            && initialVal != 0
-            && finalVal != 0
-            && initialVal < finalVal
-        ) {
-            actualString.substring(initialVal, finalVal)
-        } else ""
-
+    /**
+     * This function will return the instance of SimpleDateFormat with required pattern.
+     *
+     * @param pattern Pattern of String type for the instance required.
+     * */
+    private fun simpleDateFormatInstance(pattern: String): SimpleDateFormat {
+        return SimpleDateFormat(pattern, Locale.getDefault())
+    }
 
 }

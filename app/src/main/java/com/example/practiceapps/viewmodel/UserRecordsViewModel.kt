@@ -42,7 +42,7 @@ class UserRecordsViewModel @Inject constructor(userRecordsRepository: UserRecord
                     //Clear the DB of already existing API list.
                     mUserRecordsRepository.clearUserRecordsDB()
                     val parsedArray = mutableStateListOf<UserRecordsListDetails>()
-                    apiResponse.data.let {
+                    apiResponse.data.let { it ->
                         if (it.users.isEmpty()) {
                             _loaderLiveData.postValue(
                                 LoaderStatus(
@@ -52,12 +52,12 @@ class UserRecordsViewModel @Inject constructor(userRecordsRepository: UserRecord
                             )
                         } else {
                             it.users.forEachIndexed { index, usersRecords ->
-                                val data = UserRecordsListDetails(
+                                var data = UserRecordsListDetails(
                                     usersRecords.id,
                                     usersRecords.firstName,
                                     usersRecords.lastName,
                                     usersRecords.gender,
-                                    CommonUtils.formattedDate(usersRecords.dateOfBirth),
+                                    usersRecords.dateOfBirth,
                                     usersRecords.email,
                                     usersRecords.phone,
                                     usersRecords.street,
@@ -69,6 +69,13 @@ class UserRecordsViewModel @Inject constructor(userRecordsRepository: UserRecord
                                     usersRecords.longitude,
                                     usersRecords.latitude
                                 )
+                                data = data.also {
+                                    it.dateOfBirth = CommonUtils.dateFormatParser(
+                                        it.dateOfBirth,
+                                        CommonUtils.DATE_TIME_FORMAT_API,
+                                        CommonUtils.DATE_TIME_FORMAT_REQUIRED
+                                    )
+                                }
                                 parsedArray.add(data)
                                 _userRecordsLiveData.add(index, data)
                                 mUserRecordsRepository.insertIntoTable(data)
