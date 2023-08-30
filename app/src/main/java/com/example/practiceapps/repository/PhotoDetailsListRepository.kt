@@ -13,7 +13,7 @@ interface PhotoDetailsListRepository {
      * @param limit This limits the number of results (for better performance and speed).
      *              The default value is 10.
      * */
-    fun makeRemotePhotoDetailsListCall(
+    suspend fun makeRemotePhotoDetailsListCall(
         offset: Int,
         limit: Int
     ): NetworkResultState<ResponseClass.PhotoListResponse>
@@ -25,7 +25,7 @@ interface PhotoDetailsListRepository {
      * @param limit This limits the number of results (for better performance and speed).
      *              The default value is 10.
      * */
-    fun makeRemoteProductsListCall(
+    suspend fun makeRemoteProductsListCall(
         offset: Int,
         limit: Int
     ): NetworkResultState<ResponseClass.ProductsResponse>

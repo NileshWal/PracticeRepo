@@ -25,7 +25,7 @@ class PhotoDetailsListRepositoryImpl @Inject constructor(
      * @param limit This limits the number of results (for better performance and speed).
      *              The default value is 10.
      * */
-    override fun makeRemotePhotoDetailsListCall(
+    override suspend fun makeRemotePhotoDetailsListCall(
         offset: Int,
         limit: Int
     ): NetworkResultState<ResponseClass.PhotoListResponse> {
@@ -58,7 +58,7 @@ class PhotoDetailsListRepositoryImpl @Inject constructor(
      * @param limit This limits the number of results (for better performance and speed).
      *              The default value is 10.
      * */
-    override fun makeRemoteProductsListCall(
+    override suspend fun makeRemoteProductsListCall(
         offset: Int,
         limit: Int
     ): NetworkResultState<ResponseClass.ProductsResponse> {
