@@ -5,7 +5,9 @@ import com.example.practiceapps.database.AppDatabase
 import com.example.practiceapps.network.ApiInterface
 import com.example.practiceapps.network.NetworkInstance
 import com.example.practiceapps.repository.PhotoDetailsListRepository
+import com.example.practiceapps.repository.PhotoDetailsListRepositoryImpl
 import com.example.practiceapps.repository.UserRecordsRepository
+import com.example.practiceapps.repository.UserRecordsRepositoryImpl
 import com.example.practiceapps.ui.adapter.PhotoDetailsAdapter
 import dagger.Module
 import dagger.Provides
@@ -34,7 +36,7 @@ object AppModule {
         networkInstance: ApiInterface,
         appDatabase: AppDatabase
     ): PhotoDetailsListRepository =
-        PhotoDetailsListRepository(networkInstance, appDatabase)
+        PhotoDetailsListRepositoryImpl(networkInstance, appDatabase)
 
     @Provides
     @Singleton
@@ -42,7 +44,7 @@ object AppModule {
         networkInstance: ApiInterface,
         appDatabase: AppDatabase
     ): UserRecordsRepository =
-        UserRecordsRepository(networkInstance, appDatabase)
+        UserRecordsRepositoryImpl(networkInstance, appDatabase)
 
     @Provides
     @Singleton

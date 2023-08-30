@@ -12,6 +12,7 @@ import com.example.practiceapps.network.NetworkResultState
 import com.example.practiceapps.network.ResponseStatus
 import com.example.practiceapps.repository.UserRecordsRepository
 import com.example.practiceapps.utils.CommonUtils
+import com.example.practiceapps.utils.dateFormatParser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -70,7 +71,7 @@ class UserRecordsViewModel @Inject constructor(userRecordsRepository: UserRecord
                                     usersRecords.latitude
                                 )
                                 data = data.also {
-                                    it.dateOfBirth = CommonUtils.dateFormatParser(
+                                    it.dateOfBirth = dateFormatParser(
                                         it.dateOfBirth,
                                         CommonUtils.DATE_TIME_FORMAT_API,
                                         CommonUtils.DATE_TIME_FORMAT_REQUIRED

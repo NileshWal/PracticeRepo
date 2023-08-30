@@ -14,6 +14,8 @@ import com.example.practiceapps.databinding.FragmentPhotoListBinding
 import com.example.practiceapps.network.ResponseStatus
 import com.example.practiceapps.ui.adapter.PhotoDetailsAdapter
 import com.example.practiceapps.utils.CommonUtils
+import com.example.practiceapps.utils.LogUtils
+import com.example.practiceapps.utils.showToastMessage
 import com.example.practiceapps.viewmodel.PhotoDetailsListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -22,6 +24,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class PhotoDetailsListFragment : Fragment() {
 
+    private val screenName = PhotoDetailsListFragment::class.java.simpleName
     private lateinit var binding: FragmentPhotoListBinding
     private val viewModel: PhotoDetailsListViewModel by viewModels()
 
@@ -35,7 +38,7 @@ class PhotoDetailsListFragment : Fragment() {
     ): View {
         binding = FragmentPhotoListBinding.inflate(layoutInflater)
         setupAdapter()
-        setupLivedata()
+        subscribeToObservables()
         callApi(requireActivity())
         setupViewCallbacks()
         return binding.root
@@ -61,7 +64,7 @@ class PhotoDetailsListFragment : Fragment() {
             viewModel.callUsersApi(0, 40)
         } else {
             showLoader(false)
-            CommonUtils.showToastMessage(context, getString(R.string.no_internet))
+            showToastMessage(context, getString(R.string.no_internet))
         }
     }
 
@@ -69,14 +72,14 @@ class PhotoDetailsListFragment : Fragment() {
      * This function will set the livedata observables to listen to the change in API response
      * values and loader value.
      * */
-    private fun setupLivedata() {
+    private fun subscribeToObservables() {
         viewModel.photoDetailsListLiveData.observe(this) {
             adapter.refreshUserList(it)
         }
         viewModel.loaderLiveData.observe(this) {
             showLoader(it.shouldShow)
             if (it.responseStatus != ResponseStatus.NO_ISSUE) {
-                CommonUtils.showToastMessage(requireActivity(), it.responseStatus.toString())
+                showToastMessage(requireActivity(), it.responseStatus.toString())
             }
         }
     }

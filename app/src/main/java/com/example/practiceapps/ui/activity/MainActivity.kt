@@ -10,8 +10,8 @@ import com.example.practiceapps.R
 import com.example.practiceapps.databinding.ActivityMainBinding
 import com.example.practiceapps.ui.fragment.PhotoDetailsListFragment
 import com.example.practiceapps.ui.fragment.UserRecordsFragment
-import com.example.practiceapps.utils.CommonUtils.safeSubString
 import com.example.practiceapps.utils.LogUtils
+import com.example.practiceapps.utils.safeSubString
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
 

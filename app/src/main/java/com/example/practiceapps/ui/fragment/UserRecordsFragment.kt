@@ -37,8 +37,9 @@ import androidx.fragment.app.viewModels
 import com.example.practiceapps.R
 import com.example.practiceapps.database.model.UserRecordsListDetails
 import com.example.practiceapps.databinding.FragmentUserRecordsBinding
-import com.example.practiceapps.utils.CommonUtils
 import com.example.practiceapps.network.ResponseStatus
+import com.example.practiceapps.utils.CommonUtils
+import com.example.practiceapps.utils.showToastMessage
 import com.example.practiceapps.viewmodel.UserRecordsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -54,7 +55,7 @@ class UserRecordsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentUserRecordsBinding.inflate(layoutInflater, container, false)
-        setUpLiveData()
+        subscribeToObservables()
         return binding.root.apply {
             binding.composeView.setContent {
                 MaterialTheme(
@@ -70,10 +71,10 @@ class UserRecordsFragment : Fragment() {
     /**
      * This function will set the livedata observables to listen to the change in loader value.
      * */
-    private fun setUpLiveData() = viewModel.loaderLiveData.observe(this) {
+    private fun subscribeToObservables() = viewModel.loaderLiveData.observe(this) {
         showLoader(it.shouldShow)
         if (it.responseStatus != ResponseStatus.NO_ISSUE) {
-            CommonUtils.showToastMessage(requireActivity(), it.responseStatus.toString())
+            showToastMessage(requireActivity(), it.responseStatus.toString())
         }
     }
 
@@ -88,7 +89,7 @@ class UserRecordsFragment : Fragment() {
             viewModel.callUserRecordsApi(0, 20)
         } else {
             showLoader(false)
-            CommonUtils.showToastMessage(context, getString(R.string.no_internet))
+            showToastMessage(context, getString(R.string.no_internet))
         }
     }
 
@@ -107,7 +108,7 @@ class UserRecordsFragment : Fragment() {
             }
         } else {
             showLoader(false)
-            CommonUtils.showToastMessage(context, getString(R.string.no_internet))
+            showToastMessage(context, getString(R.string.no_internet))
         }
     }
 
