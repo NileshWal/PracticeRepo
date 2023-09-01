@@ -66,6 +66,28 @@ class PhotoDetailsListFragment : Fragment() {
             showLoader(false)
             showToastMessage(context, getString(R.string.no_internet))
         }
+
+        data class Person(var name: String, var tutorial: String)
+
+        val person = Person("Anupam", "Kotlin")
+        LogUtils.e(screenName, "person $person")
+        val l = person.let { it.tutorial = "Android" }
+        LogUtils.e(screenName, "l $l")
+        val al = person.also { it.tutorial = "iOS" }
+        LogUtils.e(screenName, "al $al")
+
+        var m = 1
+        m = m.also { it + 1 }.also { it + 1 }
+        LogUtils.e(screenName, "m $m")
+
+        higherOrderFunction({ "Hi from lambda fun" }, "Hi fellows")
+    }
+
+    private fun higherOrderFunction(funOutput: (name: String) -> String, foo: String) {
+        LogUtils.e(screenName, "higherOrderFunction called")
+        LogUtils.e(screenName, funOutput(foo))
+        val lambdaFun = { strOne: String, strTwo: String -> "$strOne $strTwo" }
+        LogUtils.e(screenName, "lambdaFun " + lambdaFun("called", "lambdaFun"))
     }
 
     /**
@@ -124,11 +146,7 @@ class PhotoDetailsListFragment : Fragment() {
      * */
     private fun sortUserList(isAscending: Boolean) {
         showLoader(true)
-        if (isAscending) {
-            viewModel.makePhotoDetailsListAscending()
-        } else {
-            viewModel.makePhotoDetailsListDescending()
-        }
+        viewModel.orderPhotoDetailsList(isAscending)
     }
 
     companion object {

@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.example.practiceapps.R
 import com.example.practiceapps.databinding.ActivityMainBinding
+import com.example.practiceapps.ui.fragment.MapsFragment
 import com.example.practiceapps.ui.fragment.PhotoDetailsListFragment
 import com.example.practiceapps.ui.fragment.UserRecordsFragment
 import com.example.practiceapps.utils.LogUtils
@@ -64,6 +65,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 binding.fragmentContainer.id,
                 PhotoDetailsListFragment.newInstance(),
                 PhotoDetailsListFragment::class.java.simpleName
+            )
+            .commit()
+    }
+
+    /**
+     * This function will set the default fragment (in current case HomeFragment) on app startup
+     * on the MainActivity.
+     * */
+    fun setMapFragment(bundle: Bundle) {
+        val mapFragment = MapsFragment()
+        mapFragment.arguments = bundle
+        supportFragmentManager.beginTransaction().addToBackStack(null)
+            .add(
+                binding.fragmentContainer.id,
+                MapsFragment.newInstance(),
+                MapsFragment::class.java.simpleName
             )
             .commit()
     }

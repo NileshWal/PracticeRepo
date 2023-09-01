@@ -18,7 +18,7 @@ class UserRecordsRepositoryImpl @Inject constructor(
     private val screenName = UserRecordsRepositoryImpl::class.java.simpleName
 
     /**
-     * This function is used to make the API call for Api Entry list.
+     * This function is used to make the API call for User list.
      *
      * @param offset Determines whether to start returning data. The default value is 0.
      * @param limit This limits the number of results (for better performance and speed).

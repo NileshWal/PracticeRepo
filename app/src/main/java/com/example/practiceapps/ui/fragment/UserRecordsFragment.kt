@@ -1,10 +1,16 @@
 package com.example.practiceapps.ui.fragment
 
+import android.Manifest
+import android.app.Activity.RESULT_OK
 import android.content.Context
+import android.content.IntentSender
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -18,6 +24,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -27,8 +34,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -38,15 +47,27 @@ import com.example.practiceapps.R
 import com.example.practiceapps.database.model.UserRecordsListDetails
 import com.example.practiceapps.databinding.FragmentUserRecordsBinding
 import com.example.practiceapps.network.ResponseStatus
+import com.example.practiceapps.ui.activity.MainActivity
 import com.example.practiceapps.utils.CommonUtils
+import com.example.practiceapps.utils.LogUtils
 import com.example.practiceapps.utils.showToastMessage
 import com.example.practiceapps.viewmodel.UserRecordsViewModel
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.LocationSettingsResponse
+import com.google.android.gms.location.Priority
+import com.google.android.gms.location.SettingsClient
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.tasks.Task
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
 class UserRecordsFragment : Fragment() {
 
+    private val screenName = UserRecordsFragment::class.java.simpleName
     private lateinit var binding: FragmentUserRecordsBinding
     private val viewModel: UserRecordsViewModel by viewModels()
 
@@ -61,10 +82,10 @@ class UserRecordsFragment : Fragment() {
                 MaterialTheme(
                     colors = if (isSystemInDarkTheme()) darkColors() else lightColors()
                 ) {
-                    PublicApiComposeView(viewModel.userRecordsLiveData)
+                    UserRecordListView(viewModel.userRecordsLiveData)
                 }
             }
-            callApi(requireActivity())
+            callApi()
         }
     }
 
@@ -80,35 +101,29 @@ class UserRecordsFragment : Fragment() {
 
     /**
      * This function will call the User List API.
-     *
-     * @param context Context is needed to check if the device has internet for the API call.
      * */
-    private fun callApi(context: Context) {
+    private fun callApi() {
         showLoader(true)
-        if (CommonUtils.isConnected(context)) {
+        if (CommonUtils.isConnected(requireActivity())) {
             viewModel.callUserRecordsApi(0, 20)
         } else {
             showLoader(false)
-            showToastMessage(context, getString(R.string.no_internet))
+            showToastMessage(requireActivity(), getString(R.string.no_internet))
         }
     }
 
     /**
      * This function will call the User List API.
      *
-     * @param context Context is needed to check if the device has internet for the API call.
+     * @param isAscending Should the list be in ascending or descending order.
      * */
-    private fun fetchOrderedListFromDB(context: Context, isAscending: Boolean) {
+    private fun fetchOrderedListFromDB(isAscending: Boolean) {
         showLoader(true)
-        if (CommonUtils.isConnected(context)) {
-            if (isAscending) {
-                viewModel.makeUserListAscending()
-            } else {
-                viewModel.makeUserListDescending()
-            }
+        if (CommonUtils.isConnected(requireActivity())) {
+            viewModel.orderUserList(isAscending)
         } else {
             showLoader(false)
-            showToastMessage(context, getString(R.string.no_internet))
+            showToastMessage(requireActivity(), getString(R.string.no_internet))
         }
     }
 
@@ -124,10 +139,10 @@ class UserRecordsFragment : Fragment() {
     /**
      * This function will create the base view of LazyColumn (like recyclerview).
      *
-     * @param apiEntriesLiveData The SnapshotStateList of PublicApisListDetails
+     * @param userRecordsLiveData The SnapshotStateList of PublicApisListDetails
      * */
     @Composable
-    private fun PublicApiComposeView(apiEntriesLiveData: SnapshotStateList<UserRecordsListDetails>) {
+    private fun UserRecordListView(userRecordsLiveData: SnapshotStateList<UserRecordsListDetails>) {
         Scaffold(
             content = {
                 Row {
@@ -139,8 +154,8 @@ class UserRecordsFragment : Fragment() {
                     ) {
                         ReorderView()
                         LazyColumn {
-                            items(items = apiEntriesLiveData) { item ->
-                                PublicApisListItem(item)
+                            items(items = userRecordsLiveData) { item ->
+                                SingleUserRecordView(item)
                             }
                         }
                     }
@@ -152,11 +167,48 @@ class UserRecordsFragment : Fragment() {
     /**
      * This function will create the item view for the LazyColumn (like recyclerview).
      *
-     * @param userRecordsListDetails The PublicApisListDetails object
+     * @param userRecordsListDetails The UserRecordsListDetails object
      * */
+    @OptIn(ExperimentalMaterialApi::class)
     @Composable
-    private fun PublicApisListItem(userRecordsListDetails: UserRecordsListDetails) {
+    private fun SingleUserRecordView(userRecordsListDetails: UserRecordsListDetails) {
+        val context = LocalContext.current
+        val latLang = LatLng(
+            userRecordsListDetails.latitude ?: 0.0,
+            userRecordsListDetails.longitude ?: 0.0
+        )
+        val settingResultRequest = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.StartIntentSenderForResult()
+        ) { activityResult ->
+            if (activityResult.resultCode == RESULT_OK) {
+                callMapFragment(latLang)
+            } else {
+                LogUtils.e(screenName, "Denied")
+            }
+        }
+        val launcher = rememberLauncherForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                LogUtils.e(screenName, "PERMISSION GRANTED")
+                checkLocationSetting(
+                    context = context,
+                    onDisabled = { intentSenderRequest ->
+                        LogUtils.e(screenName, "onDisabled")
+                        settingResultRequest.launch(intentSenderRequest)
+                    },
+                    onEnabled = {
+                        LogUtils.e(screenName, "onEnabled")
+                        callMapFragment(latLang)
+                    }
+                )
+
+            } else {
+                LogUtils.e(screenName, "PERMISSION DENIED")
+            }
+        }
         Card(
+            onClick = { launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION) },
             modifier = Modifier
                 .padding(8.dp, 8.dp)
                 .fillMaxWidth()
@@ -174,40 +226,61 @@ class UserRecordsFragment : Fragment() {
                         .align(Alignment.CenterVertically)
                 ) {
                     CustomRowTextView(
-                        "Name: ",
-                        userRecordsListDetails.firstName.toString()
-                                + " "
-                                + userRecordsListDetails.lastName.toString()
-                    )
-
-                    CustomRowTextView("Gender: ", userRecordsListDetails.gender.toString())
-                    CustomRowTextView("DoB: ", userRecordsListDetails.dateOfBirth.toString())
-                    CustomRowTextView(
-                        "Email & Phone: ",
-                        userRecordsListDetails.email.toString()
-                                + ", "
-                                + userRecordsListDetails.phone.toString()
+                        stringResource(R.string.name),
+                        "${userRecordsListDetails.firstName} ${userRecordsListDetails.lastName}"
                     )
                     CustomRowTextView(
-                        "Address: ",
-                        userRecordsListDetails.street.toString()
-                                + ", "
-                                + userRecordsListDetails.city.toString()
-                                + ", "
-                                + userRecordsListDetails.state.toString()
-                                + ", "
-                                + userRecordsListDetails.country.toString()
-                                + ", "
-                                + userRecordsListDetails.zipcode.toString()
-                                + ", "
-                                + userRecordsListDetails.latitude.toString()
-                                + " - "
-                                + userRecordsListDetails.longitude.toString()
+                        stringResource(R.string.gender_dob),
+                        "${viewModel.genderShortForm(userRecordsListDetails.gender)}, " +
+                                "${userRecordsListDetails.dateOfBirth}"
                     )
-                    CustomRowTextView("Job: ", userRecordsListDetails.job.toString())
+                    CustomRowTextView(
+                        stringResource(R.string.email_phone),
+                        "${userRecordsListDetails.email}, ${userRecordsListDetails.phone}"
+                    )
+                    CustomRowTextView(
+                        stringResource(R.string.address),
+                        "${userRecordsListDetails.street}, " +
+                                "${userRecordsListDetails.city}, " +
+                                "${userRecordsListDetails.state}, " +
+                                "${userRecordsListDetails.country}, " +
+                                "${userRecordsListDetails.zipcode}, " +
+                                "${userRecordsListDetails.latitude} - " +
+                                "${userRecordsListDetails.longitude}"
+                    )
+                    CustomRowTextView(stringResource(R.string.job), userRecordsListDetails.job)
                 }
             }
         }
+    }
+
+    // call this function on button click
+    private fun checkLocationSetting(
+        context: Context,
+        onDisabled: (IntentSenderRequest) -> Unit,
+        onEnabled: () -> Unit
+    ) {
+        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000)
+        val client: SettingsClient = LocationServices.getSettingsClient(context)
+        val builder: LocationSettingsRequest.Builder = LocationSettingsRequest
+            .Builder().addLocationRequest(locationRequest.build())
+        val gpsSettingTask: Task<LocationSettingsResponse> =
+            client.checkLocationSettings(builder.build())
+
+        gpsSettingTask.addOnSuccessListener { onEnabled() }
+        gpsSettingTask.addOnFailureListener { exception ->
+            if (exception is ResolvableApiException) {
+                try {
+                    val intentSenderRequest = IntentSenderRequest
+                        .Builder(exception.resolution)
+                        .build()
+                    onDisabled(intentSenderRequest)
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    // ignore here
+                }
+            }
+        }
+
     }
 
 
@@ -218,7 +291,7 @@ class UserRecordsFragment : Fragment() {
      * @param textValue The type of FontWeight we need for the text.
      * */
     @Composable
-    private fun CustomRowTextView(textTitle: String, textValue: String) {
+    private fun CustomRowTextView(textTitle: String?, textValue: String?) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
@@ -226,18 +299,18 @@ class UserRecordsFragment : Fragment() {
                 .padding(2.dp)
         ) {
             Text(
-                text = textTitle,
+                text = textTitle ?: stringResource(R.string.title),
                 textAlign = TextAlign.Start,
                 color = colorResource(R.color.black),
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(0.5f)
             )
             Text(
-                text = textValue,
+                text = textValue ?: stringResource(R.string.no_data),
                 textAlign = TextAlign.Start,
                 color = colorResource(R.color.black),
                 fontWeight = FontWeight.Normal,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1.5f)
             )
         }
     }
@@ -253,15 +326,27 @@ class UserRecordsFragment : Fragment() {
             Image(
                 painterResource(R.drawable.ascending),
                 contentDescription = "Ascend",
-                modifier = Modifier.clickable { fetchOrderedListFromDB(requireActivity(), true) }
+                modifier = Modifier.clickable { fetchOrderedListFromDB(true) }
             )
-
             Image(
                 painterResource(R.drawable.descending),
                 contentDescription = "Descend",
-                modifier = Modifier.clickable { fetchOrderedListFromDB(requireActivity(), false) }
+                modifier = Modifier.clickable { fetchOrderedListFromDB(false) }
             )
         }
+    }
+
+    private fun callMapFragment(latLang: LatLng) {
+        LogUtils.e(
+            screenName,
+            "callMapFragment latitude ${latLang.latitude} longitude ${latLang.longitude}"
+        )
+
+        val latLangBundle = Bundle()
+        latLangBundle.putDouble("latitude", latLang.latitude)
+        latLangBundle.putDouble("longitude", latLang.longitude)
+
+        (requireActivity() as MainActivity).setMapFragment(latLangBundle)
     }
 
     companion object {

@@ -13,4 +13,11 @@
     <string name="nav_open">Open</string>
     <string name="nav_close">Close</string>
     <string name="user_list">User List</string>
+    <string name="name">Name:</string>
+    <string name="gender_dob"><![CDATA["Sex, DOB:"]]></string>
+    <string name="dob">"DoB:"</string>
+    <string name="email_phone"><![CDATA["Email, Phone:"]]></string>
+    <string name="address">"Address:"</string>
+    <string name="job">"Job:"</string>
+    <string name="no_data">No Data</string>
 </resources>

@@ -33,7 +33,12 @@ class UserRecordsViewModel @Inject constructor(userRecordsRepository: UserRecord
     val loaderLiveData: LiveData<LoaderStatus> = _loaderLiveData
 
     /**
-     * This function is used to make the API call for Api Entry list.
+     * This function is used to make the API call for User list.
+     *
+     * @param offset Determines whether to start returning data. The default value is 0.
+     * @param limit This limits the number of results (for better performance and speed).
+     *              The default value is 10.
+     *
      * */
     fun callUserRecordsApi(offset: Int, limit: Int) = viewModelScope.launch {
         withContext(Dispatchers.IO) {
@@ -104,9 +109,19 @@ class UserRecordsViewModel @Inject constructor(userRecordsRepository: UserRecord
     }
 
     /**
+     * This function will sort the list from DB.
+     * @param isAscending Should the list be in ascending or descending order.
+     * */
+    fun orderUserList(isAscending: Boolean) = if (isAscending) {
+        makeUserListAscending()
+    } else {
+        makeUserListDescending()
+    }
+
+    /**
      * This function will fetch data in ascending order the UserRecordsRepository.
      * */
-    fun makeUserListAscending() = viewModelScope.launch {
+    private fun makeUserListAscending() = viewModelScope.launch {
         val ascendingList = mUserRecordsRepository.fetchAscendingListFromDB()
         if (_userRecordsLiveData.size > 0) {
             _userRecordsLiveData.clear()
@@ -118,7 +133,7 @@ class UserRecordsViewModel @Inject constructor(userRecordsRepository: UserRecord
     /**
      * This function will fetch data in descending order from the UserRecordsRepository.
      * */
-    fun makeUserListDescending() = viewModelScope.launch {
+    private fun makeUserListDescending() = viewModelScope.launch {
         val descendingList = mUserRecordsRepository.fetchDescendingListFromDB()
         if (_userRecordsLiveData.size > 0) {
             _userRecordsLiveData.clear()
@@ -126,5 +141,20 @@ class UserRecordsViewModel @Inject constructor(userRecordsRepository: UserRecord
         _userRecordsLiveData.addAll(descendingList.toMutableList())
         _loaderLiveData.postValue(LoaderStatus(false, ResponseStatus.NO_ISSUE))
     }
+
+    /**
+     * This function will return the initial letter for Male or Female.
+     * @param gender The gender received from API result.
+     * */
+    fun genderShortForm(gender: String?): String =
+        gender?.let {
+            if (it.lowercase() == "female") {
+                "F"
+            } else if (it.lowercase() == "male") {
+                "M"
+            } else {
+                "NA"
+            }
+        } ?: "NA"
 
 }
