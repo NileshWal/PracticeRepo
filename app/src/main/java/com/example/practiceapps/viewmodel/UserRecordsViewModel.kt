@@ -112,38 +112,40 @@ class UserRecordsViewModel @Inject constructor(userRecordsRepository: UserRecord
      * This function will sort the list from DB.
      * @param isAscending Should the list be in ascending or descending order.
      * */
-    fun orderUserList(isAscending: Boolean) = if (isAscending) {
-        makeUserListAscending()
-    } else {
-        makeUserListDescending()
+    fun orderUserList(isAscending: Boolean) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                if (isAscending) {
+                    makeUserListAscending()
+                } else {
+                    makeUserListDescending()
+                }
+            }
+        }
     }
 
     /**
      * This function will fetch data in ascending order the UserRecordsRepository.
      * */
-    private fun makeUserListAscending() = viewModelScope.launch {
-        withContext(Dispatchers.IO) {
-            val ascendingList = mUserRecordsRepository.fetchAscendingListFromDB()
-            if (_userRecordsLiveData.size > 0) {
-                _userRecordsLiveData.clear()
-            }
-            _userRecordsLiveData.addAll(ascendingList.toMutableList())
-            _loaderLiveData.postValue(LoaderStatus(false, ResponseStatus.NO_ISSUE))
+    private suspend fun makeUserListAscending() {
+        val ascendingList = mUserRecordsRepository.fetchAscendingListFromDB()
+        if (_userRecordsLiveData.size > 0) {
+            _userRecordsLiveData.clear()
         }
+        _userRecordsLiveData.addAll(ascendingList.toMutableList())
+        _loaderLiveData.postValue(LoaderStatus(false, ResponseStatus.NO_ISSUE))
     }
 
     /**
      * This function will fetch data in descending order from the UserRecordsRepository.
      * */
-    private fun makeUserListDescending() = viewModelScope.launch {
-        withContext(Dispatchers.IO) {
-            val descendingList = mUserRecordsRepository.fetchDescendingListFromDB()
-            if (_userRecordsLiveData.size > 0) {
-                _userRecordsLiveData.clear()
-            }
-            _userRecordsLiveData.addAll(descendingList.toMutableList())
-            _loaderLiveData.postValue(LoaderStatus(false, ResponseStatus.NO_ISSUE))
+    private suspend fun makeUserListDescending() {
+        val descendingList = mUserRecordsRepository.fetchDescendingListFromDB()
+        if (_userRecordsLiveData.size > 0) {
+            _userRecordsLiveData.clear()
         }
+        _userRecordsLiveData.addAll(descendingList.toMutableList())
+        _loaderLiveData.postValue(LoaderStatus(false, ResponseStatus.NO_ISSUE))
     }
 
     /**
