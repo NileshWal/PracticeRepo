@@ -67,19 +67,6 @@ class PhotoDetailsListFragment : Fragment() {
             showToastMessage(context, getString(R.string.no_internet))
         }
 
-        data class Person(var name: String, var tutorial: String)
-
-        val person = Person("Anupam", "Kotlin")
-        LogUtils.e(screenName, "person $person")
-        val l = person.let { it.tutorial = "Android" }
-        LogUtils.e(screenName, "l $l")
-        val al = person.also { it.tutorial = "iOS" }
-        LogUtils.e(screenName, "al $al")
-
-        var m = 1
-        m = m.also { it + 1 }.also { it + 1 }
-        LogUtils.e(screenName, "m $m")
-
         higherOrderFunction({ "Hi from lambda fun" }, "Hi fellows")
     }
 
