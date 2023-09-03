@@ -90,6 +90,7 @@ dependencies {
 
     //Accompanist (Permission) for Jetpack Compose
     implementation 'com.google.accompanist:accompanist-permissions:0.30.1'
+    
     //Glide - Compose
     /*implementation 'com.github.bumptech.glide:compose:1.0.0-alpha.1'*/
 

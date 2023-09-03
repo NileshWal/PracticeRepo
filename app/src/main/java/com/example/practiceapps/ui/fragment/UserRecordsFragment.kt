@@ -144,11 +144,11 @@ class UserRecordsFragment : Fragment() {
     @Composable
     private fun UserRecordListView(userRecordsLiveData: SnapshotStateList<UserRecordsListDetails>) {
         Scaffold(
-            content = {
+            content = { padding ->
                 Row {
                     Column(
                         modifier = Modifier
-                            .padding(6.dp, 8.dp, 6.dp, 8.dp)
+                            .padding(padding)
                             .fillMaxWidth()
                             .align(Alignment.CenterVertically)
                     ) {
