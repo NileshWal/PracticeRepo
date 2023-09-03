@@ -11,11 +11,11 @@ def versionPatch = 0
 def versionBuild = 1
 
 android {
-    namespace 'com.example.practiceapps'
+    namespace 'com.nilesh.practiceapps'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.example.practiceapps"
+        applicationId "com.nilesh.practiceapps"
         minSdk 27
         targetSdk 34
         versionCode versionMajor * 1000 + versionMinor * 100 + versionPatch * 10 + versionBuild
