@@ -118,18 +118,22 @@ class PhotoDetailsListViewModel @Inject constructor(photoDetailsListRepository: 
      * This function will fetch data in ascending order the UserListRepository.
      * */
     private fun makePhotoDetailsListAscending() = viewModelScope.launch {
-        val ascendingList = mPhotoDetailsListRepository.fetchAscendingListFromDB()
-        _photoDetailsListMutableLiveData.postValue(ascendingList.toMutableList())
-        _loaderMutableLiveData.postValue(LoaderStatus(false, ResponseStatus.NO_ISSUE))
+        withContext(Dispatchers.IO) {
+            val ascendingList = mPhotoDetailsListRepository.fetchAscendingListFromDB()
+            _photoDetailsListMutableLiveData.postValue(ascendingList.toMutableList())
+            _loaderMutableLiveData.postValue(LoaderStatus(false, ResponseStatus.NO_ISSUE))
+        }
     }
 
     /**
      * This function will fetch data in descending order from the UserListRepository.
      * */
     private fun makePhotoDetailsListDescending() = viewModelScope.launch {
-        val descendingList = mPhotoDetailsListRepository.fetchDescendingListFromDB()
-        _photoDetailsListMutableLiveData.postValue(descendingList.toMutableList())
-        _loaderMutableLiveData.postValue(LoaderStatus(false, ResponseStatus.NO_ISSUE))
+        withContext(Dispatchers.IO) {
+            val descendingList = mPhotoDetailsListRepository.fetchDescendingListFromDB()
+            _photoDetailsListMutableLiveData.postValue(descendingList.toMutableList())
+            _loaderMutableLiveData.postValue(LoaderStatus(false, ResponseStatus.NO_ISSUE))
+        }
     }
 
 }

@@ -98,14 +98,14 @@ class PhotoDetailsListRepositoryImpl @Inject constructor(
      * PHOTO_DETAILS_LIST_TABLE.
      * */
     override suspend fun fetchAscendingListFromDB(): List<PhotoDetails> =
-        appDatabase.photoDetailsListDataDao().ascendingOrderEnteries()
+        appDatabase.photoDetailsListDataDao().ascendingOrderEntries()
 
     /**
      * This function will make DB call to fetch data in descending order form
      * PHOTO_DETAILS_LIST_TABLE.
      * */
     override suspend fun fetchDescendingListFromDB(): List<PhotoDetails> =
-        appDatabase.photoDetailsListDataDao().descendingOrderEnteries()
+        appDatabase.photoDetailsListDataDao().descendingOrderEntries()
 
     /**
      * This function will clear the PHOTO_DETAILS_LIST_TABLE from DB.

@@ -61,13 +61,13 @@ class UserRecordsRepositoryImpl @Inject constructor(
      * This function will fetch data in ascending order from USER_RECORDS_TABLE.
      * */
     override suspend fun fetchAscendingListFromDB() =
-        appDatabase.userRecordsDataDao().ascendingOrderEnteries()
+        appDatabase.userRecordsDataDao().ascendingOrderEntries()
 
     /**
      * This function will fetch data in descending order from USER_RECORDS_TABLE.
      * */
     override suspend fun fetchDescendingListFromDB() =
-        appDatabase.userRecordsDataDao().descendingOrderEnteries()
+        appDatabase.userRecordsDataDao().descendingOrderEntries()
 
     /**
      * This function will clear the USER_RECORDS_TABLE from DB.

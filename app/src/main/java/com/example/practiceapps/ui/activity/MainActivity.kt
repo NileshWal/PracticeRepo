@@ -70,8 +70,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     /**
-     * This function will set the default fragment (in current case HomeFragment) on app startup
-     * on the MainActivity.
+     * This function will set the MapsFragment.
      * */
     fun setMapFragment(bundle: Bundle) {
         val mapFragment = MapsFragment()
@@ -99,13 +98,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.userList -> {
-                supportFragmentManager.beginTransaction().addToBackStack(null)
-                    .add(
-                        binding.fragmentContainer.id,
-                        PhotoDetailsListFragment.newInstance(),
-                        PhotoDetailsListFragment::class.java.simpleName
-                    )
-                    .commit()
+                setDefaultFragment()
             }
 
             R.id.publicApi -> {

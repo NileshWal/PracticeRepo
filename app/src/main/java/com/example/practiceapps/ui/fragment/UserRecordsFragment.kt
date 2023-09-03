@@ -92,7 +92,7 @@ class UserRecordsFragment : Fragment() {
     /**
      * This function will set the livedata observables to listen to the change in loader value.
      * */
-    private fun subscribeToObservables() = viewModel.loaderLiveData.observe(this) {
+    private fun subscribeToObservables() = viewModel.loaderLiveData.observe(viewLifecycleOwner) {
         showLoader(it.shouldShow)
         if (it.responseStatus != ResponseStatus.NO_ISSUE) {
             showToastMessage(requireActivity(), it.responseStatus.toString())
@@ -354,8 +354,7 @@ class UserRecordsFragment : Fragment() {
         /**
          * This function will set provide an instance of the fragment.
          * */
-        fun newInstance() =
-            UserRecordsFragment()
+        fun newInstance() = UserRecordsFragment()
     }
 
 }

@@ -95,10 +95,10 @@ class PhotoDetailsListFragment : Fragment() {
      * values and loader value.
      * */
     private fun subscribeToObservables() {
-        viewModel.photoDetailsListLiveData.observe(this) {
+        viewModel.photoDetailsListLiveData.observe(viewLifecycleOwner) {
             adapter.refreshUserList(it)
         }
-        viewModel.loaderLiveData.observe(this) {
+        viewModel.loaderLiveData.observe(viewLifecycleOwner) {
             showLoader(it.shouldShow)
             if (it.responseStatus != ResponseStatus.NO_ISSUE) {
                 showToastMessage(requireActivity(), it.responseStatus.toString())
@@ -154,7 +154,6 @@ class PhotoDetailsListFragment : Fragment() {
         /**
          * This function will set provide an instance of the fragment.
          * */
-        fun newInstance() =
-            PhotoDetailsListFragment()
+        fun newInstance() = PhotoDetailsListFragment()
     }
 }
