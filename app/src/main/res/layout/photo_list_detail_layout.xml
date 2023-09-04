@@ -6,8 +6,8 @@
     android:layout_marginStart="4dp"
     android:layout_marginTop="4dp"
     android:layout_marginEnd="4dp"
-    app:cardBackgroundColor="@color/purple_light_tint"
-    app:cardCornerRadius="1dp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="3dp"
     app:cardElevation="4dp"
     app:strokeWidth="1.5dp">
 
@@ -36,14 +36,29 @@
             android:textColor="@color/purple_500"
             android:textSize="14sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/avatar_IV"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/avatar_IV" />
 
         <TextView
-            android:id="@+id/title_TV"
-            android:layout_width="match_parent"
+            android:id="@+id/title_text_TV"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/white_tint"
+            android:text="@string/title"
+            android:textColor="@color/purple_500"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/title_value_TV"
+            app:layout_constraintHorizontal_weight="0.2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/avatar_IV" />
+
+        <TextView
+            android:id="@+id/title_value_TV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="5dp"
             android:background="@color/white_tint"
@@ -51,20 +66,42 @@
             android:textColor="@color/purple_500"
             android:textSize="12sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/description_TV"
-            app:layout_constraintStart_toStartOf="@+id/avatar_IV" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="0.8"
+            app:layout_constraintStart_toEndOf="@+id/title_text_TV"
+            app:layout_constraintTop_toBottomOf="@+id/avatar_IV" />
 
         <TextView
-            android:id="@+id/description_TV"
-            android:layout_width="match_parent"
+            android:id="@+id/description_text_TV"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
             android:background="@color/white_tint"
             android:text="@string/description"
             android:textColor="@color/purple_500"
-            android:textSize="11sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/avatar_IV" />
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/description_value_TV"
+            app:layout_constraintHorizontal_weight="0.2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title_value_TV" />
+
+        <TextView
+            android:id="@+id/description_value_TV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:background="@color/white_tint"
+            android:text="@string/description"
+            android:textColor="@color/purple_500"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="0.8"
+            app:layout_constraintStart_toEndOf="@+id/description_text_TV"
+            app:layout_constraintTop_toBottomOf="@+id/title_value_TV" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -36,8 +36,8 @@ class PhotoDetailsAdapter @Inject constructor(
         val photoDetails = mPhotoDetailList[position]
 
         holder.binding.userIdTV.text = photoDetails.id.toString()
-        holder.binding.titleTV.text = photoDetails.title
-        holder.binding.descriptionTV.text = photoDetails.description
+        holder.binding.titleValueTV.text = photoDetails.title
+        holder.binding.descriptionValueTV.text = photoDetails.description
         Glide.with(mContext).load(photoDetails.url).placeholder(R.drawable.avatar)
             .timeout(6000)
             .error(R.drawable.avatar)

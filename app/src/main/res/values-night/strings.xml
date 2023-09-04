@@ -3,8 +3,8 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="user_records">User Records</string>
     <string name="user_id">Id</string>
-    <string name="title">Title</string>
-    <string name="description">Description</string>
+    <string name="title">Title:</string>
+    <string name="description">Description:</string>
     <string name="no_internet">No internet</string>
     <string name="nav_open">Open</string>
     <string name="nav_close">Close</string>
@@ -16,4 +16,7 @@
     <string name="address">"Address:"</string>
     <string name="job">"Job:"</string>
     <string name="no_data">No Data</string>
+    <string name="ascend">Ascend</string>
+    <string name="descend">Descend</string>
+    <string name="location_permission_denied">Location permission for viewing maps was denied</string>
 </resources>

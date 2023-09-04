@@ -50,7 +50,6 @@ import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.LocationSettingsResponse
 import com.google.android.gms.location.Priority
 import com.google.android.gms.location.SettingsClient
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.Task
 import com.nilesh.practiceapps.R
 import com.nilesh.practiceapps.database.model.UserRecordsListDetails
@@ -173,15 +172,15 @@ class UserRecordsFragment : Fragment() {
     @Composable
     private fun SingleUserRecordView(userRecordsListDetails: UserRecordsListDetails) {
         val context = LocalContext.current
-        val latLang = LatLng(
-            userRecordsListDetails.latitude ?: 0.0,
-            userRecordsListDetails.longitude ?: 0.0
-        )
+
         val settingResultRequest = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.StartIntentSenderForResult()
         ) { activityResult ->
             if (activityResult.resultCode == RESULT_OK) {
-                callMapFragment(latLang)
+                callMapFragment(
+                    userRecordsListDetails.latitude ?: 0.0,
+                    userRecordsListDetails.longitude ?: 0.0
+                )
             } else {
                 LogUtils.e(screenName, "Denied")
             }
@@ -190,7 +189,6 @@ class UserRecordsFragment : Fragment() {
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             if (isGranted) {
-                LogUtils.e(screenName, "PERMISSION GRANTED")
                 checkLocationSetting(
                     context = context,
                     onDisabled = { intentSenderRequest ->
@@ -199,12 +197,14 @@ class UserRecordsFragment : Fragment() {
                     },
                     onEnabled = {
                         LogUtils.e(screenName, "onEnabled")
-                        callMapFragment(latLang)
+                        callMapFragment(
+                            userRecordsListDetails.latitude ?: 0.0,
+                            userRecordsListDetails.longitude ?: 0.0
+                        )
                     }
                 )
-
             } else {
-                LogUtils.e(screenName, "PERMISSION DENIED")
+                showToastMessage(context, getString(R.string.location_permission_denied))
             }
         }
         Card(
@@ -254,36 +254,6 @@ class UserRecordsFragment : Fragment() {
         }
     }
 
-    // call this function on button click
-    private fun checkLocationSetting(
-        context: Context,
-        onDisabled: (IntentSenderRequest) -> Unit,
-        onEnabled: () -> Unit
-    ) {
-        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000)
-        val client: SettingsClient = LocationServices.getSettingsClient(context)
-        val builder: LocationSettingsRequest.Builder = LocationSettingsRequest
-            .Builder().addLocationRequest(locationRequest.build())
-        val gpsSettingTask: Task<LocationSettingsResponse> =
-            client.checkLocationSettings(builder.build())
-
-        gpsSettingTask.addOnSuccessListener { onEnabled() }
-        gpsSettingTask.addOnFailureListener { exception ->
-            if (exception is ResolvableApiException) {
-                try {
-                    val intentSenderRequest = IntentSenderRequest
-                        .Builder(exception.resolution)
-                        .build()
-                    onDisabled(intentSenderRequest)
-                } catch (sendEx: IntentSender.SendIntentException) {
-                    // ignore here
-                }
-            }
-        }
-
-    }
-
-
     /**
      * This function will create custom attributes for Text.
      *
@@ -325,27 +295,55 @@ class UserRecordsFragment : Fragment() {
         ) {
             Image(
                 painterResource(R.drawable.ascending),
-                contentDescription = "Ascend",
+                contentDescription = stringResource(R.string.ascend),
                 modifier = Modifier.clickable { fetchOrderedListFromDB(true) }
             )
             Image(
                 painterResource(R.drawable.descending),
-                contentDescription = "Descend",
+                contentDescription = stringResource(R.string.descend),
                 modifier = Modifier.clickable { fetchOrderedListFromDB(false) }
             )
         }
     }
 
-    private fun callMapFragment(latLang: LatLng) {
-        LogUtils.e(
-            screenName,
-            "callMapFragment latitude ${latLang.latitude} longitude ${latLang.longitude}"
-        )
+    // call this function on button click
+    private fun checkLocationSetting(
+        context: Context,
+        onDisabled: (IntentSenderRequest) -> Unit,
+        onEnabled: () -> Unit
+    ) {
+        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 300)
+        val client: SettingsClient = LocationServices.getSettingsClient(context)
+        val builder: LocationSettingsRequest.Builder = LocationSettingsRequest
+            .Builder().addLocationRequest(locationRequest.build())
+        val gpsSettingTask: Task<LocationSettingsResponse> =
+            client.checkLocationSettings(builder.build())
 
+        gpsSettingTask.addOnSuccessListener { onEnabled() }
+        gpsSettingTask.addOnFailureListener { exception ->
+            if (exception is ResolvableApiException) {
+                try {
+                    val intentSenderRequest = IntentSenderRequest
+                        .Builder(exception.resolution)
+                        .build()
+                    onDisabled(intentSenderRequest)
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    // ignore here
+                }
+            }
+        }
+    }
+
+    /**
+     * This function will pass the latitude and longitude to the MapFragment and inflate it.
+     *
+     * @param latitude The latitude from location.
+     * @param longitude The longitude from location.
+     * */
+    private fun callMapFragment(latitude: Double, longitude: Double) {
         val latLangBundle = Bundle()
-        latLangBundle.putDouble("latitude", latLang.latitude)
-        latLangBundle.putDouble("longitude", latLang.longitude)
-
+        latLangBundle.putDouble("latitude", latitude)
+        latLangBundle.putDouble("longitude", longitude)
         (requireActivity() as MainActivity).setMapFragment(latLangBundle)
     }
 
