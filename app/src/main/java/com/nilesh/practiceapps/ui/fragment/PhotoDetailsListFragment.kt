@@ -27,7 +27,6 @@ class PhotoDetailsListFragment : Fragment() {
     private val screenName = PhotoDetailsListFragment::class.java.simpleName
     private lateinit var binding: FragmentPhotoListBinding
     private val viewModel: PhotoDetailsListViewModel by viewModels()
-
     @Inject
     lateinit var adapter: PhotoDetailsAdapter
 

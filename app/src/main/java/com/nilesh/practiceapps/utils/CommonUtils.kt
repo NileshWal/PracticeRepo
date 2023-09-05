@@ -16,6 +16,7 @@ object CommonUtils {
     const val DATE_TIME_FORMAT_API = "yyyy-MM-dd'T'HH:mm:ss"
     const val DATE_TIME_FORMAT_REQUIRED = "yyyy-MM-dd"
     const val HTTP_OK_STATUS = 200
+    const val USER_RECORDS_LIST_DETAILS = "UserRecordsListDetails"
 
     /**
      * This function will check if device is connected to internet.

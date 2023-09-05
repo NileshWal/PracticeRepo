@@ -7,13 +7,20 @@ import android.view.ViewGroup
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.fragment.app.Fragment
+import com.google.android.gms.maps.MapsInitializer
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.rememberCameraPositionState
+import com.nilesh.practiceapps.R
+import com.nilesh.practiceapps.database.model.UserRecordsListDetails
 import com.nilesh.practiceapps.databinding.FragmentMapsBinding
+import com.nilesh.practiceapps.utils.CommonUtils.USER_RECORDS_LIST_DETAILS
+import com.nilesh.practiceapps.utils.LogUtils
 
 class MapsFragment : Fragment() {
 
@@ -27,15 +34,23 @@ class MapsFragment : Fragment() {
     ): View {
         binding = FragmentMapsBinding.inflate(layoutInflater, container, false)
 
-        val latitude = arguments?.getDouble("latitude") ?: 0.0
-        val longitude = arguments?.getDouble("longitude") ?: 0.0
-
+        MapsInitializer.initialize(requireActivity(), MapsInitializer.Renderer.LATEST) {}
+        val userRecordsListDetails =
+            arguments?.getParcelable<UserRecordsListDetails>(USER_RECORDS_LIST_DETAILS)
+        LogUtils.e(screenName, "userRecordsListDetails $userRecordsListDetails")
+        val marker = LatLng(
+            userRecordsListDetails?.latitude ?: 0.0,
+            userRecordsListDetails?.longitude ?: 0.0
+        )
         return binding.root.apply {
             binding.composeMapView.setContent {
-                val marker = LatLng(latitude, longitude)
+
+                val cameraPositionState = rememberCameraPositionState {
+                    position = CameraPosition.fromLatLngZoom(marker, 5f)
+                }
                 GoogleMap(
                     modifier = Modifier.fillMaxSize(),
-                    /*cameraPositionState = cameraState,*/
+                    cameraPositionState = cameraPositionState,
                     properties = MapProperties(
                         isMyLocationEnabled = true,
                         mapType = MapType.HYBRID,
@@ -44,19 +59,15 @@ class MapsFragment : Fragment() {
                 ) {
                     Marker(
                         state = MarkerState(position = marker),
-                        title = "MyPosition",
-                        snippet = "This is a description of this Marker",
+                        title = userRecordsListDetails?.let { "${it.firstName} ${it.lastName}, \n${it.latitude} ${it.longitude}" }
+                            ?: context.getString(R.string.john_doe),
+                        snippet = userRecordsListDetails?.let { "${it.city}, ${it.country}" }
+                            ?: context.getString(R.string.this_is_a_description_of_this_marker),
                         draggable = true
                     )
                 }
-
             }
         }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
     }
 
     companion object {
@@ -64,6 +75,10 @@ class MapsFragment : Fragment() {
         /**
          * This function will set provide an instance of the fragment.
          * */
-        fun newInstance() = MapsFragment()
+        fun newInstance(bundle: Bundle): MapsFragment {
+            val fragment = MapsFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }

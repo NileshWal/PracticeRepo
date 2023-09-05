@@ -6,14 +6,15 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import com.google.android.material.navigation.NavigationView
+import com.nilesh.practiceapps.R
 import com.nilesh.practiceapps.databinding.ActivityMainBinding
 import com.nilesh.practiceapps.ui.fragment.MapsFragment
 import com.nilesh.practiceapps.ui.fragment.PhotoDetailsListFragment
 import com.nilesh.practiceapps.ui.fragment.UserRecordsFragment
+import com.nilesh.practiceapps.utils.CommonUtils
 import com.nilesh.practiceapps.utils.LogUtils
 import com.nilesh.practiceapps.utils.safeSubString
-import com.google.android.material.navigation.NavigationView
-import com.nilesh.practiceapps.R
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -73,12 +74,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
      * This function will set the MapsFragment.
      * */
     fun setMapFragment(bundle: Bundle) {
-        val mapFragment = MapsFragment()
-        mapFragment.arguments = bundle
         supportFragmentManager.beginTransaction().addToBackStack(null)
             .add(
                 binding.fragmentContainer.id,
-                MapsFragment.newInstance(),
+                MapsFragment.newInstance(bundle),
                 MapsFragment::class.java.simpleName
             )
             .commit()

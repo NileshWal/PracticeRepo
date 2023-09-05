@@ -25,9 +25,9 @@ class UserRecordsViewModel @Inject constructor(userRecordsRepository: UserRecord
 
     private val mUserRecordsRepository = userRecordsRepository
 
-    private var _userRecordsLiveData = mutableStateListOf<UserRecordsListDetails>()
-    var userRecordsLiveData: SnapshotStateList<UserRecordsListDetails> =
-        _userRecordsLiveData
+    private var _userRecordsMutableStateList = mutableStateListOf<UserRecordsListDetails>()
+    var userRecordsSnapshotStateList: SnapshotStateList<UserRecordsListDetails> =
+        _userRecordsMutableStateList
 
     private val _loaderLiveData = MutableLiveData<LoaderStatus>()
     val loaderLiveData: LiveData<LoaderStatus> = _loaderLiveData
@@ -83,7 +83,7 @@ class UserRecordsViewModel @Inject constructor(userRecordsRepository: UserRecord
                                     )
                                 }
                                 parsedArray.add(data)
-                                _userRecordsLiveData.add(index, data)
+                                _userRecordsMutableStateList.add(index, data)
                                 mUserRecordsRepository.insertIntoTable(data)
                             }
                             _loaderLiveData.postValue(
@@ -129,10 +129,10 @@ class UserRecordsViewModel @Inject constructor(userRecordsRepository: UserRecord
      * */
     private suspend fun makeUserListAscending() {
         val ascendingList = mUserRecordsRepository.fetchAscendingListFromDB()
-        if (_userRecordsLiveData.size > 0) {
-            _userRecordsLiveData.clear()
+        if (_userRecordsMutableStateList.size > 0) {
+            _userRecordsMutableStateList.clear()
         }
-        _userRecordsLiveData.addAll(ascendingList.toMutableList())
+        _userRecordsMutableStateList.addAll(ascendingList.toMutableList())
         _loaderLiveData.postValue(LoaderStatus(false, ResponseStatus.NO_ISSUE))
     }
 
@@ -141,10 +141,10 @@ class UserRecordsViewModel @Inject constructor(userRecordsRepository: UserRecord
      * */
     private suspend fun makeUserListDescending() {
         val descendingList = mUserRecordsRepository.fetchDescendingListFromDB()
-        if (_userRecordsLiveData.size > 0) {
-            _userRecordsLiveData.clear()
+        if (_userRecordsMutableStateList.size > 0) {
+            _userRecordsMutableStateList.clear()
         }
-        _userRecordsLiveData.addAll(descendingList.toMutableList())
+        _userRecordsMutableStateList.addAll(descendingList.toMutableList())
         _loaderLiveData.postValue(LoaderStatus(false, ResponseStatus.NO_ISSUE))
     }
 

@@ -6,10 +6,17 @@
     android:background="@color/white"
     tools:context=".ui.fragment.PhotoDetailsListFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/userListRV"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_userListRV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/userListRV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <include
         android:id="@+id/loader"

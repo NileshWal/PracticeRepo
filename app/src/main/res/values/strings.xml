@@ -23,4 +23,6 @@
     <string name="ascend">Ascend</string>
     <string name="descend">Descend</string>
     <string name="location_permission_denied">Location permission for viewing maps was denied</string>
+    <string name="john_doe">John Doe</string>
+    <string name="this_is_a_description_of_this_marker">This is a description of this Marker</string>
 </resources>

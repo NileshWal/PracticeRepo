@@ -57,6 +57,7 @@ import com.nilesh.practiceapps.databinding.FragmentUserRecordsBinding
 import com.nilesh.practiceapps.network.ResponseStatus
 import com.nilesh.practiceapps.ui.activity.MainActivity
 import com.nilesh.practiceapps.utils.CommonUtils
+import com.nilesh.practiceapps.utils.CommonUtils.USER_RECORDS_LIST_DETAILS
 import com.nilesh.practiceapps.utils.LogUtils
 import com.nilesh.practiceapps.utils.showToastMessage
 import com.nilesh.practiceapps.viewmodel.UserRecordsViewModel
@@ -75,16 +76,16 @@ class UserRecordsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentUserRecordsBinding.inflate(layoutInflater, container, false)
+        callApi()
         subscribeToObservables()
         return binding.root.apply {
             binding.composeView.setContent {
                 MaterialTheme(
                     colors = if (isSystemInDarkTheme()) darkColors() else lightColors()
                 ) {
-                    UserRecordListView(viewModel.userRecordsLiveData)
+                    UserRecordListView(viewModel.userRecordsSnapshotStateList)
                 }
             }
-            callApi()
         }
     }
 
@@ -138,10 +139,10 @@ class UserRecordsFragment : Fragment() {
     /**
      * This function will create the base view of LazyColumn (like recyclerview).
      *
-     * @param userRecordsLiveData The SnapshotStateList of PublicApisListDetails
+     * @param userRecordsSnapshotStateList The SnapshotStateList of PublicApisListDetails
      * */
     @Composable
-    private fun UserRecordListView(userRecordsLiveData: SnapshotStateList<UserRecordsListDetails>) {
+    private fun UserRecordListView(userRecordsSnapshotStateList: SnapshotStateList<UserRecordsListDetails>) {
         Scaffold(
             content = { padding ->
                 Row {
@@ -153,7 +154,7 @@ class UserRecordsFragment : Fragment() {
                     ) {
                         ReorderView()
                         LazyColumn {
-                            items(items = userRecordsLiveData) { item ->
+                            items(items = userRecordsSnapshotStateList) { item ->
                                 SingleUserRecordView(item)
                             }
                         }
@@ -177,10 +178,7 @@ class UserRecordsFragment : Fragment() {
             contract = ActivityResultContracts.StartIntentSenderForResult()
         ) { activityResult ->
             if (activityResult.resultCode == RESULT_OK) {
-                callMapFragment(
-                    userRecordsListDetails.latitude ?: 0.0,
-                    userRecordsListDetails.longitude ?: 0.0
-                )
+                callMapFragment(userRecordsListDetails)
             } else {
                 LogUtils.e(screenName, "Denied")
             }
@@ -197,10 +195,7 @@ class UserRecordsFragment : Fragment() {
                     },
                     onEnabled = {
                         LogUtils.e(screenName, "onEnabled")
-                        callMapFragment(
-                            userRecordsListDetails.latitude ?: 0.0,
-                            userRecordsListDetails.longitude ?: 0.0
-                        )
+                        callMapFragment(userRecordsListDetails)
                     }
                 )
             } else {
@@ -337,13 +332,11 @@ class UserRecordsFragment : Fragment() {
     /**
      * This function will pass the latitude and longitude to the MapFragment and inflate it.
      *
-     * @param latitude The latitude from location.
-     * @param longitude The longitude from location.
+     * @param userRecordsListDetails The UserRecordsListDetails object for user details.
      * */
-    private fun callMapFragment(latitude: Double, longitude: Double) {
+    private fun callMapFragment(userRecordsListDetails: UserRecordsListDetails) {
         val latLangBundle = Bundle()
-        latLangBundle.putDouble("latitude", latitude)
-        latLangBundle.putDouble("longitude", longitude)
+        latLangBundle.putParcelable(USER_RECORDS_LIST_DETAILS, userRecordsListDetails)
         (requireActivity() as MainActivity).setMapFragment(latLangBundle)
     }
 
