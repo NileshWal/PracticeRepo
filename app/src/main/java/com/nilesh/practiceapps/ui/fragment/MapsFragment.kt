@@ -20,7 +20,6 @@ import com.nilesh.practiceapps.R
 import com.nilesh.practiceapps.database.model.UserRecordsListDetails
 import com.nilesh.practiceapps.databinding.FragmentMapsBinding
 import com.nilesh.practiceapps.utils.CommonUtils.USER_RECORDS_LIST_DETAILS
-import com.nilesh.practiceapps.utils.LogUtils
 
 class MapsFragment : Fragment() {
 
@@ -37,7 +36,6 @@ class MapsFragment : Fragment() {
         MapsInitializer.initialize(requireActivity(), MapsInitializer.Renderer.LATEST) {}
         val userRecordsListDetails =
             arguments?.getParcelable<UserRecordsListDetails>(USER_RECORDS_LIST_DETAILS)
-        LogUtils.e(screenName, "userRecordsListDetails $userRecordsListDetails")
         val marker = LatLng(
             userRecordsListDetails?.latitude ?: 0.0,
             userRecordsListDetails?.longitude ?: 0.0

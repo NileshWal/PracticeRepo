@@ -7,7 +7,6 @@ import com.nilesh.practiceapps.network.NetworkResultState
 import com.nilesh.practiceapps.network.ResponseClass
 import com.nilesh.practiceapps.network.ResponseStatus
 import com.nilesh.practiceapps.utils.CommonUtils
-import com.nilesh.practiceapps.utils.LogUtils
 import javax.inject.Inject
 
 
@@ -32,13 +31,9 @@ class PhotoDetailsListRepositoryImpl @Inject constructor(
         val photoDetailsListRequest = networkInstance.fetchPhotoDetailsList(offset, limit)
         try {
             val photoDetailsListResult = photoDetailsListRequest.execute()
-            LogUtils.e(screenName, "response code ${photoDetailsListResult.code()}")
             return if (photoDetailsListResult.isSuccessful && photoDetailsListResult.code()
                 == CommonUtils.HTTP_OK_STATUS
             ) {
-                LogUtils.e(
-                    screenName, "photoDetailsListResult ${photoDetailsListResult.body().toString()}"
-                )
                 return photoDetailsListResult.body()?.let {
                     NetworkResultState.Success(ResponseStatus.NO_ISSUE.toString(), it)
                 } ?: NetworkResultState.Error(ResponseStatus.EMPTY_API_LIST.toString())
@@ -65,13 +60,9 @@ class PhotoDetailsListRepositoryImpl @Inject constructor(
         val productsListRequest = networkInstance.fetchProductsList(offset, limit)
         try {
             val productsListResult = productsListRequest.execute()
-            LogUtils.e(screenName, "response code ${productsListResult.code()}")
             return if (productsListResult.isSuccessful && productsListResult.code()
                 == CommonUtils.HTTP_OK_STATUS
             ) {
-                LogUtils.e(
-                    screenName, "productsListResult ${productsListResult.body().toString()}"
-                )
                 return productsListResult.body()?.let {
                     NetworkResultState.Success(ResponseStatus.NO_ISSUE.toString(), it)
                 } ?: NetworkResultState.Error(ResponseStatus.EMPTY_API_LIST.toString())

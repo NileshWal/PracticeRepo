@@ -12,9 +12,6 @@ import com.nilesh.practiceapps.databinding.ActivityMainBinding
 import com.nilesh.practiceapps.ui.fragment.MapsFragment
 import com.nilesh.practiceapps.ui.fragment.PhotoDetailsListFragment
 import com.nilesh.practiceapps.ui.fragment.UserRecordsFragment
-import com.nilesh.practiceapps.utils.CommonUtils
-import com.nilesh.practiceapps.utils.LogUtils
-import com.nilesh.practiceapps.utils.safeSubString
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -32,8 +29,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setUpNavDrawer()
         setDefaultFragment()
         customOnBackPressDispatcher()
-        val subStr = "Hello World".safeSubString("Hello World", 1, 3)
-        LogUtils.e(screenName, subStr)
     }
 
     /**

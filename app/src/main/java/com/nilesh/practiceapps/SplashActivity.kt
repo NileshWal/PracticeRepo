@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
-import com.nilesh.practiceapps.ui.activity.MainActivity
+import com.nilesh.practiceapps.ui.activity.ComposeActivity
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
@@ -14,7 +14,7 @@ class SplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
 
         Handler().postDelayed({
-            val i = Intent(this, MainActivity::class.java)
+            val i = Intent(this, ComposeActivity::class.java)
             startActivity(i)
             finish()
 

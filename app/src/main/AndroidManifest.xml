@@ -20,7 +20,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PracticeApps"
         tools:targetApi="34">
-
+        <activity
+            android:name=".ui.activity.ComposeActivity"
+            android:exported="false" />
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 

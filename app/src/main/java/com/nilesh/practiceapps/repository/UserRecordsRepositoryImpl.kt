@@ -7,7 +7,6 @@ import com.nilesh.practiceapps.network.NetworkResultState
 import com.nilesh.practiceapps.network.ResponseClass
 import com.nilesh.practiceapps.network.ResponseStatus
 import com.nilesh.practiceapps.utils.CommonUtils
-import com.nilesh.practiceapps.utils.LogUtils
 import javax.inject.Inject
 
 class UserRecordsRepositoryImpl @Inject constructor(
@@ -31,13 +30,9 @@ class UserRecordsRepositoryImpl @Inject constructor(
     ): NetworkResultState<ResponseClass.UserRecordsResponse> {
         try {
             val userRecordsResponse = networkInstance.fetchUserRecords(offset, limit)
-            LogUtils.e(screenName, "userRecordsResponse code ${userRecordsResponse.code()}")
             return if (userRecordsResponse.isSuccessful && userRecordsResponse.code()
                 == CommonUtils.HTTP_OK_STATUS
             ) {
-                LogUtils.e(
-                    screenName, "userRecordsResponse ${userRecordsResponse.body().toString()}"
-                )
                 return userRecordsResponse.body()?.let {
                     NetworkResultState.Success(ResponseStatus.NO_ISSUE.toString(), it)
                 } ?: NetworkResultState.Error(ResponseStatus.API_ERROR.toString())

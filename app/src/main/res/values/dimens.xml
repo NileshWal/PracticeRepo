@@ -5,4 +5,5 @@
     <dimen name="nav_header_vertical_spacing" tools:ignore="UnusedResources">8dp</dimen>
     <dimen name="nav_header_height">88dp</dimen>
     <dimen name="nav_header_user">10dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>

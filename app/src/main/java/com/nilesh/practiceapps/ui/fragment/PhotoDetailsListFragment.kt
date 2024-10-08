@@ -14,7 +14,6 @@ import com.nilesh.practiceapps.databinding.FragmentPhotoListBinding
 import com.nilesh.practiceapps.network.ResponseStatus
 import com.nilesh.practiceapps.ui.adapter.PhotoDetailsAdapter
 import com.nilesh.practiceapps.utils.CommonUtils
-import com.nilesh.practiceapps.utils.LogUtils
 import com.nilesh.practiceapps.utils.showToastMessage
 import com.nilesh.practiceapps.viewmodel.PhotoDetailsListViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,6 +26,7 @@ class PhotoDetailsListFragment : Fragment() {
     private val screenName = PhotoDetailsListFragment::class.java.simpleName
     private lateinit var binding: FragmentPhotoListBinding
     private val viewModel: PhotoDetailsListViewModel by viewModels()
+
     @Inject
     lateinit var adapter: PhotoDetailsAdapter
 
@@ -65,15 +65,6 @@ class PhotoDetailsListFragment : Fragment() {
             showLoader(false)
             showToastMessage(context, getString(R.string.no_internet))
         }
-
-        higherOrderFunction({ "Hi from lambda fun" }, "Hi fellows")
-    }
-
-    private fun higherOrderFunction(funOutput: (name: String) -> String, foo: String) {
-        LogUtils.e(screenName, "higherOrderFunction called")
-        LogUtils.e(screenName, funOutput(foo))
-        val lambdaFun = { strOne: String, strTwo: String -> "$strOne $strTwo" }
-        LogUtils.e(screenName, "lambdaFun " + lambdaFun("called", "lambdaFun"))
     }
 
     /**

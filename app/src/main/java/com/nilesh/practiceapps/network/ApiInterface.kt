@@ -25,5 +25,7 @@ interface ApiInterface {
         @Query("limit") limit: Int = 10
     ): Response<ResponseClass.UserRecordsResponse>
 
+    @GET("posts")
+    suspend fun fetchUserList(): List<ResponseClass.UserData>
 
 }
