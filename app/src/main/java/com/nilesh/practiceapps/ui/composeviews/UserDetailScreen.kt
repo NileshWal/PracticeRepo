@@ -7,13 +7,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
+import com.nilesh.practiceapps.R
 import com.nilesh.practiceapps.network.ResponseClass
 
 @Composable
 fun UserDetailScreen(navController: NavController, userData: ResponseClass.UserData) {
+
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
@@ -31,7 +34,7 @@ fun UserDetailScreen(navController: NavController, userData: ResponseClass.UserD
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
                     end.linkTo(cardIdTextView.start)
-                }, text = "ID:- "
+                }, text = stringResource(R.string.id)
         )
 
         CustomCardView(
@@ -53,7 +56,7 @@ fun UserDetailScreen(navController: NavController, userData: ResponseClass.UserD
                     top.linkTo(cardIdTitleView.bottom)
                     start.linkTo(parent.start)
                     end.linkTo(cardUserIdTextView.start)
-                }, text = "User ID:-"
+                }, text = stringResource(id = R.string.user_id)
         )
 
         CustomCardView(
@@ -75,7 +78,7 @@ fun UserDetailScreen(navController: NavController, userData: ResponseClass.UserD
                     top.linkTo(cardUserIdTitleView.bottom)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                }, text = "Title:-"
+                }, text = stringResource(id = R.string.title)
         )
 
         CustomCardView(
@@ -97,7 +100,7 @@ fun UserDetailScreen(navController: NavController, userData: ResponseClass.UserD
                     top.linkTo(cardTitleTextView.bottom)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                }, text = "Body:-"
+                }, text = stringResource(R.string.body)
         )
 
         CustomCardView(

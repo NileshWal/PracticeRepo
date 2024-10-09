@@ -6,11 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nilesh.practiceapps.network.NetworkInstance
 import com.nilesh.practiceapps.network.ResponseClass
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
-class UserListViewModel : ViewModel() {
+@HiltViewModel
+class UserListViewModel @Inject constructor() : ViewModel() {
 
     private val _dataList = MutableLiveData<List<ResponseClass.UserData>>()
     val dataList: LiveData<List<ResponseClass.UserData>> = _dataList

@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -21,7 +22,14 @@ fun TextView(
     modifier: Modifier = Modifier,
     text: String,
     textAlign: TextAlign = TextAlign.Center,
-    textColor: Color = Color.Unspecified
+    textColor: Color = Color.Unspecified,
+    fontSize: TextUnit = TextUnit.Unspecified
 ) {
-    Text(modifier = modifier, text = text, textAlign = textAlign, color = textColor)
+    Text(
+        modifier = modifier,
+        text = text,
+        textAlign = textAlign,
+        color = textColor,
+        fontSize = fontSize
+    )
 }
