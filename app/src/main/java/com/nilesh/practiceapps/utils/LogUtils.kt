@@ -1,7 +1,7 @@
 package com.nilesh.practiceapps.utils
 
 import android.util.Log
-import com.nilesh.practiceapps.BuildConfig
+import org.conscrypt.BuildConfig
 
 
 object LogUtils {

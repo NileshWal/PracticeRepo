@@ -8,7 +8,6 @@ import androidx.navigation.compose.composable
 import com.nilesh.practiceapps.network.ResponseClass
 import com.nilesh.practiceapps.ui.composeviews.UserDetailScreen
 import com.nilesh.practiceapps.ui.composeviews.UserListScreen
-import com.nilesh.practiceapps.viewmodel.UserListViewModel
 
 object Routes {
 
@@ -19,8 +18,7 @@ object Routes {
     fun AppNavHost(
         modifier: Modifier,
         navController: NavHostController,
-        startDestination: String,
-        userListViewModel: UserListViewModel
+        startDestination: String
     ) {
         NavHost(
             modifier = modifier,
@@ -28,7 +26,7 @@ object Routes {
             startDestination = startDestination
         ) {
             composable(USER_LIST_SCREEN) {
-                UserListScreen(navController = navController, userListViewModel = userListViewModel)
+                UserListScreen(navController = navController)
             }
 
             composable(USER_LIST_DETAIL_SCREEN) {

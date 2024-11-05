@@ -2,7 +2,6 @@ package com.nilesh.practiceapps.ui.activity
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -16,11 +15,10 @@ import androidx.navigation.compose.rememberNavController
 import com.nilesh.practiceapps.R
 import com.nilesh.practiceapps.compose_route.Routes
 import com.nilesh.practiceapps.ui.composeviews.TextView
-import com.nilesh.practiceapps.viewmodel.UserListViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ComposeActivity : AppCompatActivity() {
-
-    private val userListViewModel: UserListViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,8 +36,7 @@ class ComposeActivity : AppCompatActivity() {
                 Routes.AppNavHost(
                     modifier = Modifier.padding(it),
                     navController = rememberNavController(),
-                    startDestination = Routes.USER_LIST_SCREEN,
-                    userListViewModel = userListViewModel
+                    startDestination = Routes.USER_LIST_SCREEN
                 )
             })
     }

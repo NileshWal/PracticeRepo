@@ -30,18 +30,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.nilesh.practiceapps.R
 import com.nilesh.practiceapps.compose_route.Routes
 import com.nilesh.practiceapps.network.ResponseClass
 import com.nilesh.practiceapps.viewmodel.UserListViewModel
 
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun UserListScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    userListViewModel: UserListViewModel
+    userListViewModel: UserListViewModel = hiltViewModel<UserListViewModel>()
 ) {
 
     val context = LocalContext.current
