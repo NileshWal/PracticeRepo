@@ -39,7 +39,7 @@
             android:value="AIzaSyDzPVvLee051P6kDd9VZICElx7MC9w3eyI" />
 
         <activity
-            android:name=".SplashActivity"
+            android:name=".ui.activity.SplashActivity"
             android:exported="true"
             android:theme="@style/SplashTheme">
             <intent-filter>

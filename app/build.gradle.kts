@@ -8,14 +8,15 @@ plugins {
 
 android {
     namespace = "com.nilesh.practiceapps"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.nilesh.practiceapps"
         minSdk = 24
-        /*targetSdk = 34*/
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -32,11 +33,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.15"
@@ -72,6 +73,7 @@ dependencies {
     // Android Room Database Library
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
+    testImplementation(libs.junit.jupiter)
     // To use Kotlin annotation processing tool (kapt)
     ksp(libs.androidx.room.compiler)
 
@@ -124,4 +126,11 @@ dependencies {
     testImplementation(libs.mockito.core)
     // required if you want to use Mockito for Android tests
     androidTestImplementation(libs.mockito.android)
+
+    //Truth library
+    testImplementation(libs.truth)
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
