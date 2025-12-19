@@ -6,6 +6,9 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import com.google.android.material.navigation.NavigationView
 import com.nilesh.practiceapps.R
 import com.nilesh.practiceapps.databinding.ActivityMainBinding
@@ -26,6 +29,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        applyWindowInsets()
         setUpNavDrawer()
         setDefaultFragment()
         customOnBackPressDispatcher()
@@ -127,6 +131,44 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             })
     }
 
+    private fun applyWindowInsets() {
+        // Handle system bars (status + nav)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            // Apply bottom padding dynamically
+            view.updatePadding(
+                bottom = systemBars.bottom
+            )
+
+            // Don’t consume the insets — pass them along
+            insets
+        }
+
+        // If you have a BottomNavigationView, apply insets separately
+        /*ViewCompat.setOnApplyWindowInsetsListener(binding.bottomNavigationView) { view, insets ->
+            val navInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            view.updatePadding(bottom = navInsets.bottom)
+            insets
+        }*/
+    }
+
+    private fun handleSystemBars() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            // Apply dynamic padding to prevent overlap
+            view.updatePadding(
+                left = systemBarsInsets.left,
+                top = systemBarsInsets.top,
+                right = systemBarsInsets.right,
+                bottom = systemBarsInsets.bottom
+            )
+
+            WindowInsetsCompat.CONSUMED
+        }
+    }
+
     //===============NavComponent
     /*private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
@@ -182,5 +224,4 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             navController, appBarConfiguration
         ) || super.onSupportNavigateUp()
     }*/
-
 }
