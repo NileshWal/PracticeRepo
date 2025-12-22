@@ -1,6 +1,7 @@
 package com.nilesh.practiceapps.ui.activity
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -15,6 +16,7 @@ import com.nilesh.practiceapps.databinding.ActivityMainBinding
 import com.nilesh.practiceapps.ui.fragment.MapsFragment
 import com.nilesh.practiceapps.ui.fragment.PhotoDetailsListFragment
 import com.nilesh.practiceapps.ui.fragment.UserRecordsFragment
+import com.nilesh.practiceapps.utils.LogUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -40,13 +42,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
      * implementation is in progress.
      * */
     private fun setUpNavDrawer() {
-        setSupportActionBar(binding.toolbar.toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         actionBarDrawerToggle =
             ActionBarDrawerToggle(
                 this,
-                binding.myDrawerLayout,
+                binding.drawerLayout,
                 R.string.nav_open,
                 R.string.nav_close
             )
@@ -84,10 +86,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
-            if (binding.myDrawerLayout.isDrawerVisible(GravityCompat.START)) {
-                binding.myDrawerLayout.closeDrawer(GravityCompat.START)
+            if (binding.drawerLayout.isDrawerVisible(GravityCompat.START)) {
+                binding.drawerLayout.closeDrawer(GravityCompat.START)
             } else {
-                binding.myDrawerLayout.openDrawer(GravityCompat.START)
+                binding.drawerLayout.openDrawer(GravityCompat.START)
             }
         }
         return super.onOptionsItemSelected(item)
@@ -109,7 +111,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     .commit()
             }
         }
-        binding.myDrawerLayout.closeDrawer(GravityCompat.START)
+        binding.drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
 
@@ -132,19 +134,32 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun applyWindowInsets() {
-        // Handle system bars (status + nav)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+        LogUtils.error(screenName, "applyWindowInsets")
+        // Toolbar → push below status bar
+        ViewCompat.setOnApplyWindowInsetsListener(binding.toolbar) { view, insets ->
+            val statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+            LogUtils.error(screenName, "statusBars.top ${statusBars.top}")
+            view.updatePadding(top = statusBars.top)
+            insets
+        }
 
+        // Content → navigation bar
+        ViewCompat.setOnApplyWindowInsetsListener(binding.fragmentContainer) { view, insets ->
+            val navBars = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            view.updatePadding(bottom = navBars.bottom)
+            insets
+        }
+
+        // Handle system bars (status + nav)
+        /*ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             // Apply bottom padding dynamically
             view.updatePadding(
                 bottom = systemBars.bottom
             )
-
             // Don’t consume the insets — pass them along
             insets
-        }
-
+        }*/
         // If you have a BottomNavigationView, apply insets separately
         /*ViewCompat.setOnApplyWindowInsetsListener(binding.bottomNavigationView) { view, insets ->
             val navInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
@@ -152,76 +167,76 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             insets
         }*/
     }
+}
 
-    private fun handleSystemBars() {
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
-            val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+/*private fun handleSystemBars() {
+    ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+        val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 
-            // Apply dynamic padding to prevent overlap
-            view.updatePadding(
-                left = systemBarsInsets.left,
-                top = systemBarsInsets.top,
-                right = systemBarsInsets.right,
-                bottom = systemBarsInsets.bottom
-            )
-
-            WindowInsetsCompat.CONSUMED
-        }
-    }
-
-    //===============NavComponent
-    /*private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var navController: NavController
-    private lateinit var navHostFragment: NavHostFragment*/
-    /*private fun setUpNavHost() {
-        setSupportActionBar(binding.appBarMain.toolbar)
-        appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.nav_home_fragment),
-            binding.drawerLayout
+        // Apply dynamic padding to prevent overlap
+        view.updatePadding(
+            left = systemBarsInsets.left,
+            top = systemBarsInsets.top,
+            right = systemBarsInsets.right,
+            bottom = systemBarsInsets.bottom
         )
-        binding.navView.itemIconTintList = null
-        navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main)
-                    as NavHostFragment
-        navController = navHostFragment.navController
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        binding.navView.setupWithNavController(navController)
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
-                R.id.nav_apiEntries -> {
-                    binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-                    if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                        binding.drawerLayout.closeDrawer(GravityCompat.START)
-                    }
-                    binding.appBarMain.toolbar.setNavigationOnClickListener {
-                        navController.navigateUp()
-                    }
-                }
 
-                else -> {
-                    binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-                    binding.appBarMain.toolbar.setNavigationOnClickListener {
-                        binding.drawerLayout.openDrawer(GravityCompat.START)
-                    }
+        WindowInsetsCompat.CONSUMED
+    }
+}*/
+
+//===============NavComponent
+/*private lateinit var appBarConfiguration: AppBarConfiguration
+private lateinit var navController: NavController
+private lateinit var navHostFragment: NavHostFragment*/
+/*private fun setUpNavHost() {
+    setSupportActionBar(binding.appBarMain.toolbar)
+    appBarConfiguration = AppBarConfiguration(
+        setOf(R.id.nav_home_fragment),
+        binding.drawerLayout
+    )
+    binding.navView.itemIconTintList = null
+    navHostFragment =
+        supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main)
+                as NavHostFragment
+    navController = navHostFragment.navController
+    // Passing each menu ID as a set of Ids because each
+    // menu should be considered as top level destinations.
+    setupActionBarWithNavController(navController, appBarConfiguration)
+    binding.navView.setupWithNavController(navController)
+    navController.addOnDestinationChangedListener { _, destination, _ ->
+        when (destination.id) {
+            R.id.nav_apiEntries -> {
+                binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+                if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
+                }
+                binding.appBarMain.toolbar.setNavigationOnClickListener {
+                    navController.navigateUp()
+                }
+            }
+
+            else -> {
+                binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                binding.appBarMain.toolbar.setNavigationOnClickListener {
+                    binding.drawerLayout.openDrawer(GravityCompat.START)
                 }
             }
         }
-    }*/
+    }
+}*/
 
-    /**
-     * Function to display the back navigation icon and home icon
-     */
-    /*fun showBackIcon() {
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-        binding.appBarMain.toolbar.setNavigationIcon(R.drawable.ic_back_arrow)
-    }*/
+/**
+ * Function to display the back navigation icon and home icon
+ */
+/*fun showBackIcon() {
+    supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    supportActionBar?.setDisplayShowHomeEnabled(true)
+    binding.appBarMain.toolbar.setNavigationIcon(R.drawable.ic_back_arrow)
+}*/
 
-    /*override fun onSupportNavigateUp(): Boolean {
-        return NavigationUI.navigateUp(
-            navController, appBarConfiguration
-        ) || super.onSupportNavigateUp()
-    }*/
-}
+/*override fun onSupportNavigateUp(): Boolean {
+    return NavigationUI.navigateUp(
+        navController, appBarConfiguration
+    ) || super.onSupportNavigateUp()
+}*/

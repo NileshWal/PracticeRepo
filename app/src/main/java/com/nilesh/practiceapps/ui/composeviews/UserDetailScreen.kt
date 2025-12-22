@@ -20,7 +20,7 @@ fun UserDetailScreen(navController: NavController, userData: ResponseClass.UserD
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.Cyan)
+            .background(color = Color.Gray)
     ) {
 
         val (cardIdTitleView, cardIdTextView, cardUserIdTitleView, cardUserIdTextView,
