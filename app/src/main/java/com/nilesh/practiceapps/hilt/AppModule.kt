@@ -28,7 +28,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesNetworkInstance(): ApiInterface = NetworkInstance.getInstance()
+    fun providesNetworkInstance(): ApiInterface = NetworkInstance.getInstance(NetworkInstance.NORMAL_BASE_URL)
 
     @Provides
     @Singleton

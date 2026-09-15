@@ -21,7 +21,7 @@ class PhotoDetailsListViewModelTest {
     @Before
     fun setup() {
         appDatabase = AppDatabase.getInstance(mock(Context::class.java))
-        networkInstance = NetworkInstance.getInstance()
+        networkInstance = NetworkInstance.getInstance(NetworkInstance.NORMAL_BASE_URL)
         photoDetailsListRepository = PhotoDetailsListRepositoryImpl(networkInstance, appDatabase)
         viewModel = PhotoDetailsListViewModel(photoDetailsListRepository)
     }

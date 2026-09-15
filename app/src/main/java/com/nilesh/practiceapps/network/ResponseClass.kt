@@ -1,5 +1,7 @@
 package com.nilesh.practiceapps.network
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
 
@@ -67,5 +69,41 @@ class ResponseClass {
         @SerializedName("price") var price: Double? = null,
         @SerializedName("category") var category: String? = null
     )
+
+    data class UserData(
+        @SerializedName("userId") var userId: Int? = null,
+        @SerializedName("id") var id: Int? = null,
+        @SerializedName("title") var title: String? = null,
+        @SerializedName("body") var body: String? = null
+    ) : Parcelable {
+        constructor(parcel: Parcel) : this(
+            parcel.readValue(Int::class.java.classLoader) as? Int,
+            parcel.readValue(Int::class.java.classLoader) as? Int,
+            parcel.readString(),
+            parcel.readString()
+        ) {
+        }
+
+        override fun writeToParcel(parcel: Parcel, flags: Int) {
+            parcel.writeValue(userId)
+            parcel.writeValue(id)
+            parcel.writeString(title)
+            parcel.writeString(body)
+        }
+
+        override fun describeContents(): Int {
+            return 0
+        }
+
+        companion object CREATOR : Parcelable.Creator<UserData> {
+            override fun createFromParcel(parcel: Parcel): UserData {
+                return UserData(parcel)
+            }
+
+            override fun newArray(size: Int): Array<UserData?> {
+                return arrayOfNulls(size)
+            }
+        }
+    }
 
 }

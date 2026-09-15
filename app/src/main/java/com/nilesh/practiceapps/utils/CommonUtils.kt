@@ -1,5 +1,6 @@
 package com.nilesh.practiceapps.utils
 
+import android.app.Activity
 import android.content.Context
 import android.net.ConnectivityManager
 import android.widget.Toast
@@ -39,6 +40,10 @@ object CommonUtils {
  * @param message String message to be displayed.
  * */
 fun Fragment.showToastMessage(context: Context, message: String) {
+    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+}
+
+fun Activity.showToastMessage(context: Context, message: String) {
     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 }
 

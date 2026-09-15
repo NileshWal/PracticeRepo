@@ -8,10 +8,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object NetworkInstance {
 
-    private const val BASE_URL = "https://api.slingacademy.com/v1/sample-data/"
+    const val NORMAL_BASE_URL = "https://api.slingacademy.com/v1/sample-data/"
+    const val COMPOSE_BASE_URL = "https://jsonplaceholder.typicode.com/"
 
-    fun getInstance(): ApiInterface {
-        val retrofitInstance = Retrofit.Builder().baseUrl(BASE_URL)
+    fun getInstance(baseUrl: String): ApiInterface {
+        val retrofitInstance = Retrofit.Builder().baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         return retrofitInstance.create(ApiInterface::class.java)

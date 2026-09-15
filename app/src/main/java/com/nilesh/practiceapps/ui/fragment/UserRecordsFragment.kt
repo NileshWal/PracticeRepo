@@ -179,8 +179,6 @@ class UserRecordsFragment : Fragment() {
         ) { activityResult ->
             if (activityResult.resultCode == RESULT_OK) {
                 callMapFragment(userRecordsListDetails)
-            } else {
-                LogUtils.e(screenName, "Denied")
             }
         }
         val launcher = rememberLauncherForActivityResult(
@@ -190,11 +188,9 @@ class UserRecordsFragment : Fragment() {
                 checkLocationSetting(
                     context = context,
                     onDisabled = { intentSenderRequest ->
-                        LogUtils.e(screenName, "onDisabled")
                         settingResultRequest.launch(intentSenderRequest)
                     },
                     onEnabled = {
-                        LogUtils.e(screenName, "onEnabled")
                         callMapFragment(userRecordsListDetails)
                     }
                 )
