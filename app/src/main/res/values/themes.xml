@@ -15,6 +15,7 @@
     </style>
 
     <style name="Theme.PracticeApps.NoActionBar">
+        <item name="android:forceDarkAllowed">false</item>
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">true</item>
     </style>

@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId "com.nilesh.practiceapps"
-        minSdk 27
+        minSdk 29
         targetSdk 34
         versionCode versionMajor * 1000 + versionMinor * 100 + versionPatch * 10 + versionBuild
         versionName "${versionMajor}.${versionMinor}.${versionPatch}.${versionBuild}"
